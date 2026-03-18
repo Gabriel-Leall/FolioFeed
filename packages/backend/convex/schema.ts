@@ -1,4 +1,79 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
-export default defineSchema({});
+import { AREA_VALUES } from "./lib/constants";
+
+const areaValidator = v.union(
+  v.literal(AREA_VALUES[0]),
+  v.literal(AREA_VALUES[1]),
+  v.literal(AREA_VALUES[2]),
+  v.literal(AREA_VALUES[3]),
+  v.literal(AREA_VALUES[4]),
+  v.literal(AREA_VALUES[5]),
+);
+
+export default defineSchema({
+  users: defineTable({
+    clerkId: v.string(),
+    nickname: v.optional(v.string()),
+    avatarUrl: v.optional(v.string()),
+    primaryArea: v.optional(areaValidator),
+    stackTags: v.optional(v.array(v.string())),
+    bio: v.optional(v.string()),
+    availabilityStatus: v.union(
+      v.literal("available"),
+      v.literal("unavailable"),
+    ),
+    socialLinks: v.optional(
+      v.object({
+        github: v.optional(v.string()),
+        linkedin: v.optional(v.string()),
+        website: v.optional(v.string()),
+      }),
+    ),
+    portfoliosCount: v.number(),
+    critiquesGivenCount: v.number(),
+    upvotesReceivedCount: v.number(),
+    createdAt: v.number(),
+  }).index("by_clerkId", ["clerkId"]),
+
+  portfolios: defineTable({
+    authorId: v.id("users"),
+    url: v.string(),
+    normalizedUrl: v.string(),
+    title: v.string(),
+    area: areaValidator,
+    stack: v.array(v.string()),
+    goalsContext: v.optional(v.string()),
+    previewImageUrl: v.optional(v.string()),
+    averageRating: v.number(),
+    critiqueCount: v.number(),
+    likeCount: v.number(),
+    topRatedScore: v.number(),
+    isDeleted: v.boolean(),
+    deletedAt: v.optional(v.number()),
+    createdAt: v.number(),
+  })
+    .index("by_authorId", ["authorId"])
+    .index("by_createdAt", ["createdAt"])
+    .index("by_topRatedScore", ["topRatedScore"])
+    .index("by_normalizedUrl", ["normalizedUrl"]),
+
+  critiques: defineTable({
+    portfolioId: v.id("portfolios"),
+    authorId: v.id("users"),
+    rating: v.number(),
+    feedback: v.string(),
+    upvotes: v.number(),
+    createdAt: v.number(),
+  })
+    .index("by_portfolioId", ["portfolioId"])
+    .index("by_authorId", ["authorId"])
+    .index("by_createdAt", ["createdAt"]),
+
+  portfolioLikes: defineTable({
+    portfolioId: v.id("portfolios"),
+    userId: v.id("users"),
+    createdAt: v.number(),
+  }).index("by_portfolioId_userId", ["portfolioId", "userId"]),
+});
