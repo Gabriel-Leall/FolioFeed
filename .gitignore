@@ -59,3 +59,10 @@ specs
 .agent/learning-guides/
 **/learning-guides/
 *.md
+
+# Convex AI files and agent skills (local tooling)
+.kilocode/
+.kiro/
+skills/
+skills-lock.json
+convex/_generated/ai/
