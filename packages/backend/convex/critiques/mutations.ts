@@ -101,6 +101,7 @@ export const submit = mutation({
     // Increment user's critiquesGivenCount
     await ctx.db.patch(user._id, {
       critiquesGivenCount: user.critiquesGivenCount + 1,
+      reputationScore: (user.reputationScore ?? 0) + 1,
     });
 
     return { critiqueId };
@@ -129,23 +130,50 @@ export const upvote = mutation({
       throw new ConvexError("SELF_UPVOTE_NOT_ALLOWED");
     }
 
-    // Idempotent toggle: check if already upvoted via a dedicated table
-    // Since there's no critiqueUpvotes table in the schema, we track via a
-    // naming convention in the existing tables. For MVP simplicity, we'll use
-    // a separate mutation pattern — just increment (not a real toggle yet).
-    // TODO: Add critiqueUpvotes table in Phase 6 for proper toggle semantics.
-    // For now: upvote is a one-way increment (no double-upvote prevention at DB level).
-    const newUpvotes = critique.upvotes + 1;
-    await ctx.db.patch(args.critiqueId, { upvotes: newUpvotes });
+    const existingUpvote = await ctx.db
+      .query("critiqueUpvotes")
+      .withIndex("by_critiqueId_userId", (q) =>
+        q.eq("critiqueId", args.critiqueId).eq("userId", user._id),
+      )
+      .unique();
 
-    // Increment critique author's upvotesReceivedCount
     const critiqueAuthor = await ctx.db.get(critique.authorId);
-    if (critiqueAuthor !== null) {
-      await ctx.db.patch(critique.authorId, {
-        upvotesReceivedCount: critiqueAuthor.upvotesReceivedCount + 1,
+    let newUpvotes = critique.upvotes;
+    let newUpvoted = false;
+
+    if (existingUpvote) {
+      // Remove upvote
+      await ctx.db.delete(existingUpvote._id);
+      newUpvotes = Math.max(0, critique.upvotes - 1);
+      
+      if (critiqueAuthor) {
+        await ctx.db.patch(critiqueAuthor._id, {
+          upvotesReceivedCount: Math.max(0, critiqueAuthor.upvotesReceivedCount - 1),
+          totalUpvotesReceived: Math.max(0, (critiqueAuthor.totalUpvotesReceived ?? 0) - 1),
+          reputationScore: Math.max(0, (critiqueAuthor.reputationScore ?? 0) - 5),
+        });
+      }
+    } else {
+      // Add upvote
+      await ctx.db.insert("critiqueUpvotes", {
+        critiqueId: args.critiqueId,
+        userId: user._id,
+        createdAt: Date.now(),
       });
+      newUpvotes = critique.upvotes + 1;
+      newUpvoted = true;
+
+      if (critiqueAuthor) {
+        await ctx.db.patch(critiqueAuthor._id, {
+          upvotesReceivedCount: critiqueAuthor.upvotesReceivedCount + 1,
+          totalUpvotesReceived: (critiqueAuthor.totalUpvotesReceived ?? 0) + 1,
+          reputationScore: (critiqueAuthor.reputationScore ?? 0) + 5,
+        });
+      }
     }
 
-    return { upvoted: true, upvotes: newUpvotes };
+    await ctx.db.patch(args.critiqueId, { upvotes: newUpvotes });
+
+    return { upvoted: newUpvoted, upvotes: newUpvotes };
   },
 });

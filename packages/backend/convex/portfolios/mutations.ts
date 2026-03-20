@@ -1,6 +1,7 @@
 import { ConvexError, v } from "convex/values";
 
 import { mutation } from "../_generated/server";
+import { internal } from "../_generated/api";
 import { AREA_VALUES } from "../lib/constants";
 import { getInternalUser } from "../lib/auth";
 import { normalizeUrl, isSafeUrl } from "../lib/urlUtils";
@@ -77,6 +78,11 @@ export const submit = mutation({
       likeCount: 0,
       topRatedScore: 0,
       isDeleted: false,
+      isArchived: false,
+      previewStatus: "pending",
+      previewAttemptCount: 0,
+      urlStatus: "unchecked",
+      consecutiveOfflineCount: 0,
       createdAt: now,
     });
 
@@ -85,6 +91,46 @@ export const submit = mutation({
       portfoliosCount: user.portfoliosCount + 1,
     });
 
+    // T036: Kick off preview generation immediately (fires after this mutation commits)
+    await ctx.scheduler.runAfter(
+      0,
+      internal.portfolios.scheduled.generatePreview,
+      { portfolioId, normalizedUrl, attemptCount: 0 },
+    );
+
     return { portfolioId };
+  },
+});
+
+// ---------------------------------------------------------------------------
+// portfolios.delete — T041
+// Authenticated soft-delete
+// ---------------------------------------------------------------------------
+
+export const deletePortfolio = mutation({
+  args: {
+    portfolioId: v.id("portfolios"),
+  },
+  handler: async (ctx, args) => {
+    const user = await getInternalUser(ctx);
+
+    const portfolio = await ctx.db.get(args.portfolioId);
+    if (!portfolio || portfolio.isDeleted) {
+      throw new ConvexError("NOT_FOUND");
+    }
+
+    if (portfolio.authorId !== user._id) {
+      throw new ConvexError("UNAUTHORIZED");
+    }
+
+    await ctx.db.patch(args.portfolioId, {
+      isDeleted: true,
+      deletedAt: Date.now(),
+    });
+
+    // Decrement user's portfoliosCount
+    await ctx.db.patch(user._id, {
+      portfoliosCount: Math.max(0, user.portfoliosCount - 1),
+    });
   },
 });

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { AREA_VALUES, type Area } from "@PeerFolio/backend/convex/lib/constants";
+import { CharacterCounter } from "@/components/CharacterCounter";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -36,23 +37,6 @@ const PREDEFINED_TAGS = [
 ] as const;
 
 // ---------------------------------------------------------------------------
-// Character Counter sub-component
-// ---------------------------------------------------------------------------
-
-function CharCounter({ current, max }: { current: number; max: number }) {
-  const pct = current / max;
-  const show = pct >= 0.8;
-  if (!show) return null;
-  return (
-    <span
-      className={`text-xs tabular-nums ${current >= max ? "text-destructive font-medium" : "text-muted-foreground"}`}
-    >
-      {current}/{max}
-    </span>
-  );
-}
-
-// ---------------------------------------------------------------------------
 // Main component
 // ---------------------------------------------------------------------------
 
@@ -60,7 +44,7 @@ export default function SubmitPortfolioForm() {
   const { isLoaded, isSignedIn } = useUser();
   const router = useRouter();
 
-  const profile = useQuery(api.users.queries.getProfile);
+  const profile = useQuery(api.users.queries.getMe);
   useEffect(() => {
     if (profile === null) {
       router.push("/setup-profile?redirect=/submit" as any);
@@ -275,7 +259,7 @@ export default function SubmitPortfolioForm() {
           <label htmlFor="portfolio-title" className="block text-sm font-medium">
             Título <span aria-hidden="true" className="text-destructive">*</span>
           </label>
-          <CharCounter current={title.length} max={80} />
+          <CharacterCounter current={title.length} max={80} />
         </div>
         <input
           id="portfolio-title"
@@ -424,7 +408,7 @@ export default function SubmitPortfolioForm() {
             Pedido de Feedback{" "}
             <span className="text-muted-foreground font-normal">(opcional)</span>
           </label>
-          <CharCounter current={goalsContext.length} max={300} />
+          <CharacterCounter current={goalsContext.length} max={300} />
         </div>
         <textarea
           id="goals-context"

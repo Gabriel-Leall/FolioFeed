@@ -1,6 +1,5 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
 import { api } from "@PeerFolio/backend/convex/_generated/api";
 import type { Id } from "@PeerFolio/backend/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
@@ -52,7 +51,7 @@ function CritiquesSection({
   isOwner: boolean;
   critiqueFormRef: React.RefObject<HTMLElement | null>;
 }) {
-  const critiques = useQuery(api["portfolios/queries"].getCritiques, { portfolioId });
+  const critiques = useQuery(api.portfolios.queries.getCritiques, { portfolioId });
 
   if (critiques === undefined) {
     // Loading skeleton
@@ -128,8 +127,8 @@ type PortfolioDetailClientProps = {
 };
 
 export default function PortfolioDetailClient({ portfolioId }: PortfolioDetailClientProps) {
-  const { user } = useUser();
-  const portfolio = useQuery(api["portfolios/queries"].getById, { portfolioId });
+  const me = useQuery(api.users.queries.getMe);
+  const portfolio = useQuery(api.portfolios.queries.getById, { portfolioId });
   const critiqueFormRef = useRef<HTMLElement | null>(null);
 
   // Loading
@@ -168,12 +167,8 @@ export default function PortfolioDetailClient({ portfolioId }: PortfolioDetailCl
     );
   }
 
-  // Determine if viewer is owner
-  // We compare Clerk user ID with portfolio author's clerkId via the author record
-  // Since portfolio.author._id is the Convex user ID, we check it after user sync
-  // For now, we do a best-effort check via the Clerk user's externalId or the author nickname match.
-  // Full owner check requires Convex identity — we'll refine once users.getMe query exists.
-  const isOwner = false; // Simplified — will be wired properly once getMe is available
+  // Determine if viewer is owner by comparing Convex user IDs
+  const isOwner = me !== undefined && me !== null && me._id === portfolio.author._id;
 
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6">
@@ -192,6 +187,17 @@ export default function PortfolioDetailClient({ portfolioId }: PortfolioDetailCl
               @{portfolio.author.nickname ?? "Anônimo"}
             </a>
           </span>
+          {/* Offline badge — T046 */}
+          {portfolio.urlStatus === "offline" &&
+            (portfolio.consecutiveOfflineCount ?? 0) >= 3 && (
+              <span
+                role="status"
+                aria-label="Site pode estar fora do ar"
+                className="inline-flex items-center gap-1 rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-600 dark:text-amber-400"
+              >
+                ⚠ Site pode estar fora do ar
+              </span>
+            )}
         </div>
       </header>
 

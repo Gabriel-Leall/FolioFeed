@@ -10,7 +10,7 @@ export default async function SubmitPage() {
   const { userId } = await auth();
 
   if (!userId) {
-    redirect("/sign-in?redirect=/submit");
+    redirect("/sign-in?redirect=/submit" as any);
   }
 
   // SubmitPortfolioForm is a client component that handles the form logic

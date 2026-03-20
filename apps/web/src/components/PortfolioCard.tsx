@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import AuthModal from "@/components/AuthModal";
+import { TruncatedText } from "@/components/TruncatedText";
 
 // ---------------------------------------------------------------------------
 // Type derived from portfolios.list query return
@@ -32,6 +33,8 @@ export type PortfolioCardData = {
   createdAt: number;
   authorId: Id<"users">;
   hasLiked?: boolean;
+  urlStatus?: "online" | "offline" | "unchecked";
+  consecutiveOfflineCount?: number;
   author: {
     _id: Id<"users">;
     nickname?: string;
@@ -49,8 +52,8 @@ export default function PortfolioCard({
 }: {
   portfolio: PortfolioCardData;
 }) {
-  const { isSignedIn, user } = useUser();
-  const toggleLikeMutation = useMutation(api["likes/mutations"].toggle);
+  const { isSignedIn } = useUser();
+  const toggleLikeMutation = useMutation(api.likes.mutations.toggle);
 
   const [localLikeCount, setLocalLikeCount] = useState(portfolio.likeCount);
   const [localHasLiked, setLocalHasLiked] = useState<boolean>(!!portfolio.hasLiked);
@@ -62,6 +65,10 @@ export default function PortfolioCard({
   // do a best effort client-side check if user is the author if we knew their _id.
   // Actually, we can just block it based on standard logic, but Convex will throw anyway.
   
+  const showOfflineBadge =
+    portfolio.urlStatus === "offline" &&
+    (portfolio.consecutiveOfflineCount ?? 0) >= 3;
+
   const handleLike = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -91,11 +98,6 @@ export default function PortfolioCard({
     }
   };
 
-  const truncatedTitle =
-    portfolio.title.length > 60
-      ? portfolio.title.slice(0, 57) + "..."
-      : portfolio.title;
-
   return (
     <>
       <Link
@@ -118,20 +120,22 @@ export default function PortfolioCard({
           )}
 
           {/* Top Badges overlay */}
-          <div className="absolute left-3 top-3 right-3 flex justify-between">
+          <div className="absolute left-3 top-3 right-3 flex justify-between items-start">
             <span className="inline-flex items-center rounded-full bg-background/90 px-2.5 py-0.5 text-xs font-semibold shadow-xs backdrop-blur-xs">
               {portfolio.area}
             </span>
+            {showOfflineBadge && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/90 px-2.5 py-0.5 text-xs font-medium text-white shadow-xs backdrop-blur-xs">
+                ⚠ Site pode estar fora do ar
+              </span>
+            )}
           </div>
         </div>
 
         {/* Content */}
         <div className="flex flex-1 flex-col p-4">
-          <h3
-            className="line-clamp-2 text-lg font-semibold leading-tight tracking-tight sm:text-xl"
-            title={portfolio.title.length > 60 ? portfolio.title : undefined}
-          >
-            {truncatedTitle}
+          <h3 className="line-clamp-2 text-lg font-semibold leading-tight tracking-tight sm:text-xl">
+            <TruncatedText text={portfolio.title} maxLength={60} />
           </h3>
 
           <p className="mt-1 truncate text-sm text-muted-foreground">

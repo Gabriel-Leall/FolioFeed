@@ -67,7 +67,7 @@ export default function CritiqueCard({
   author,
 }: CritiqueCardProps) {
   const { isSignedIn, user } = useUser();
-  const upvoteMutation = useMutation(api["critiques/mutations"].upvote);
+  const upvoteMutation = useMutation(api.critiques.mutations.upvote);
   const [localUpvotes, setLocalUpvotes] = useState(upvotes);
   const [isUpvoting, setIsUpvoting] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);

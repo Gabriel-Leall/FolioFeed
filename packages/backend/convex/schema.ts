@@ -34,6 +34,8 @@ export default defineSchema({
     portfoliosCount: v.number(),
     critiquesGivenCount: v.number(),
     upvotesReceivedCount: v.number(),
+    reputationScore: v.optional(v.number()),
+    totalUpvotesReceived: v.optional(v.number()),
     createdAt: v.number(),
   }).index("by_clerkId", ["clerkId"]),
 
@@ -50,7 +52,21 @@ export default defineSchema({
     critiqueCount: v.number(),
     likeCount: v.number(),
     topRatedScore: v.number(),
+
+    // Preview Status
+    previewStatus: v.optional(
+      v.union(v.literal("pending"), v.literal("success"), v.literal("failed")),
+    ),
+    previewAttemptCount: v.optional(v.number()),
+
+    // URL Health
+    urlStatus: v.optional(
+      v.union(v.literal("online"), v.literal("offline"), v.literal("unchecked")),
+    ),
+    consecutiveOfflineCount: v.optional(v.number()),
+
     isDeleted: v.boolean(),
+    isArchived: v.optional(v.boolean()),
     deletedAt: v.optional(v.number()),
     createdAt: v.number(),
   })
@@ -58,6 +74,12 @@ export default defineSchema({
     .index("by_createdAt", ["createdAt"])
     .index("by_topRatedScore", ["topRatedScore"])
     .index("by_normalizedUrl", ["normalizedUrl"]),
+
+  critiqueUpvotes: defineTable({
+    critiqueId: v.id("critiques"),
+    userId: v.id("users"),
+    createdAt: v.number(),
+  }).index("by_critiqueId_userId", ["critiqueId", "userId"]),
 
   critiques: defineTable({
     portfolioId: v.id("portfolios"),

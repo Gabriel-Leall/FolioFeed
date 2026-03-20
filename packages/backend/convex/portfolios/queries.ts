@@ -24,6 +24,8 @@ export const getById = query({
       topRatedScore: v.number(),
       isDeleted: v.boolean(),
       createdAt: v.number(),
+      urlStatus: v.optional(v.union(v.literal("online"), v.literal("offline"), v.literal("unchecked"))),
+      consecutiveOfflineCount: v.optional(v.number()),
       author: v.object({
         _id: v.id("users"),
         nickname: v.optional(v.string()),
@@ -148,17 +150,32 @@ export const list = query({
         .query("portfolios")
         .withIndex("by_createdAt")
         .order("desc")
-        .filter((q) => q.eq(q.field("isDeleted"), false));
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("isDeleted"), false),
+            q.neq(q.field("isArchived"), true),
+          ),
+        );
     } else if (filter === "topRated") {
       filteredQuery = ctx.db
         .query("portfolios")
         .withIndex("by_topRatedScore")
         .order("desc")
-        .filter((q) => q.eq(q.field("isDeleted"), false));
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("isDeleted"), false),
+            q.neq(q.field("isArchived"), true),
+          ),
+        );
     } else {
       filteredQuery = ctx.db
         .query("portfolios")
-        .filter((q) => q.eq(q.field("isDeleted"), false));
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("isDeleted"), false),
+            q.neq(q.field("isArchived"), true),
+          ),
+        );
     }
 
     if (area) {

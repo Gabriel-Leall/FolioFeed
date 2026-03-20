@@ -7,6 +7,7 @@ import { useMutation } from "convex/react";
 import { useState } from "react";
 
 import AuthModal from "@/components/AuthModal";
+import { CharacterCounter } from "@/components/CharacterCounter";
 
 // ---------------------------------------------------------------------------
 // Star Rating sub-component
@@ -59,7 +60,7 @@ type CritiqueFormProps = {
 
 export default function CritiqueForm({ portfolioId, portfolioUrl, isOwner }: CritiqueFormProps) {
   const { isSignedIn } = useUser();
-  const submitCritique = useMutation(api["critiques/mutations"].submit);
+  const submitCritique = useMutation(api.critiques.mutations.submit);
 
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState("");
@@ -148,11 +149,7 @@ export default function CritiqueForm({ portfolioId, portfolioUrl, isOwner }: Cri
             <label htmlFor="critique-feedback" className="block text-sm font-medium">
               Feedback <span aria-hidden="true" className="text-destructive">*</span>
             </label>
-            <span
-              className={`text-xs tabular-nums ${feedbackLen > 800 ? "text-destructive font-medium" : "text-muted-foreground"}`}
-            >
-              {feedbackLen}/1000
-            </span>
+            <CharacterCounter current={feedbackLen} max={1000} />
           </div>
           <textarea
             id="critique-feedback"
