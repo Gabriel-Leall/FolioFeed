@@ -27,7 +27,13 @@ export const getById = query({
       lastCritiqueAt: v.optional(v.number()),
       isDeleted: v.boolean(),
       createdAt: v.number(),
-      urlStatus: v.optional(v.union(v.literal("online"), v.literal("offline"), v.literal("unchecked"))),
+      urlStatus: v.optional(
+        v.union(
+          v.literal("online"),
+          v.literal("offline"),
+          v.literal("unchecked"),
+        ),
+      ),
       consecutiveOfflineCount: v.optional(v.number()),
       author: v.object({
         _id: v.id("users"),
@@ -136,10 +142,7 @@ const areaValidator = v.union(
 
 export const list = query({
   args: {
-    filter: v.union(
-      v.literal("latest"),
-      v.literal("topRated"),
-    ),
+    filter: v.union(v.literal("latest"), v.literal("topRated")),
     area: v.optional(areaValidator),
     paginationOpts: paginationOptsValidator,
   },

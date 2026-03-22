@@ -57,15 +57,17 @@ export default function PortfolioCard({
   const toggleLikeMutation = useMutation(api.likes.mutations.toggle);
 
   const [localLikeCount, setLocalLikeCount] = useState(portfolio.likeCount);
-  const [localHasLiked, setLocalHasLiked] = useState<boolean>(!!portfolio.hasLiked);
+  const [localHasLiked, setLocalHasLiked] = useState<boolean>(
+    !!portfolio.hasLiked,
+  );
   const [isLiking, setIsLiking] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const displayName = portfolio.author.nickname ?? "Anônimo";
-  // The backend might return different values for clerkId and authorId, so we 
+  // The backend might return different values for clerkId and authorId, so we
   // do a best effort client-side check if user is the author if we knew their _id.
   // Actually, we can just block it based on standard logic, but Convex will throw anyway.
-  
+
   const showOfflineBadge =
     portfolio.urlStatus === "offline" &&
     (portfolio.consecutiveOfflineCount ?? 0) >= 3;
@@ -246,16 +248,16 @@ export function PortfolioCardSkeleton() {
       <div className="flex flex-1 flex-col p-4">
         <div className="mb-2 h-6 w-3/4 animate-pulse rounded-md bg-muted" />
         <div className="h-4 w-1/2 animate-pulse rounded-md bg-muted" />
-        
+
         <div className="mt-auto pt-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-6 w-6 animate-pulse rounded-full bg-muted" />
             <div className="h-4 w-20 animate-pulse rounded-md bg-muted" />
           </div>
           <div className="flex gap-3">
-             <div className="h-4 w-8 animate-pulse rounded-md bg-muted" />
-             <div className="h-4 w-8 animate-pulse rounded-md bg-muted" />
-             <div className="h-4 w-8 animate-pulse rounded-md bg-muted" />
+            <div className="h-4 w-8 animate-pulse rounded-md bg-muted" />
+            <div className="h-4 w-8 animate-pulse rounded-md bg-muted" />
+            <div className="h-4 w-8 animate-pulse rounded-md bg-muted" />
           </div>
         </div>
       </div>

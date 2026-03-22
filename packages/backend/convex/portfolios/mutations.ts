@@ -54,7 +54,9 @@ export const submit = mutation({
     // Check for duplicate normalizedUrl
     const existing = await ctx.db
       .query("portfolios")
-      .withIndex("by_normalizedUrl", (q) => q.eq("normalizedUrl", normalizedUrl))
+      .withIndex("by_normalizedUrl", (q) =>
+        q.eq("normalizedUrl", normalizedUrl),
+      )
       .first();
 
     if (existing !== null && !existing.isDeleted) {

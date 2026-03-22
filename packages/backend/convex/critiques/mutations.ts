@@ -88,10 +88,12 @@ export const submit = mutation({
 
     const newCritiqueCount = allCritiques.length;
     const totalRating = allCritiques.reduce((sum, c) => sum + c.rating, 0);
-    const newAverageRating = newCritiqueCount > 0 ? totalRating / newCritiqueCount : 0;
+    const newAverageRating =
+      newCritiqueCount > 0 ? totalRating / newCritiqueCount : 0;
 
     // topRatedScore = avg_stars × log10(total_critiques + 1)
-    const newTopRatedScore = newAverageRating * Math.log10(newCritiqueCount + 1);
+    const newTopRatedScore =
+      newAverageRating * Math.log10(newCritiqueCount + 1);
 
     await ctx.db.patch(args.portfolioId, {
       critiqueCount: newCritiqueCount,
@@ -147,12 +149,21 @@ export const upvote = mutation({
       // Remove upvote
       await ctx.db.delete(existingUpvote._id);
       newUpvotes = Math.max(0, critique.upvotes - 1);
-      
+
       if (critiqueAuthor) {
         await ctx.db.patch(critiqueAuthor._id, {
-          upvotesReceivedCount: Math.max(0, critiqueAuthor.upvotesReceivedCount - 1),
-          totalUpvotesReceived: Math.max(0, (critiqueAuthor.totalUpvotesReceived ?? 0) - 1),
-          reputationScore: Math.max(0, (critiqueAuthor.reputationScore ?? 0) - 5),
+          upvotesReceivedCount: Math.max(
+            0,
+            critiqueAuthor.upvotesReceivedCount - 1,
+          ),
+          totalUpvotesReceived: Math.max(
+            0,
+            (critiqueAuthor.totalUpvotesReceived ?? 0) - 1,
+          ),
+          reputationScore: Math.max(
+            0,
+            (critiqueAuthor.reputationScore ?? 0) - 5,
+          ),
         });
       }
     } else {

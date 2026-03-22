@@ -53,7 +53,7 @@ export function FeedTabs({ currentFilter, onFilterChange }: FeedTabsProps) {
                 isActive
                   ? "text-foreground"
                   : "text-muted-foreground hover:text-foreground",
-                tab.disabled && "cursor-not-allowed opacity-60"
+                tab.disabled && "cursor-not-allowed opacity-60",
               )}
             >
               {tab.label}
