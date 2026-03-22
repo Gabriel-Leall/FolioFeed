@@ -139,9 +139,9 @@ export const updateUrlHealthResult = internalMutation({
     isOnline: v.boolean(),
     currentConsecutiveOfflineCount: v.number(),
     authorId: v.id("users"),
+    normalizedUrl: v.string(),
   },
-  handler: async (ctx, { portfolioId, isOnline, currentConsecutiveOfflineCount, authorId }) => {
-    void authorId; // reserved for future notification system
+  handler: async (ctx, { portfolioId, isOnline, currentConsecutiveOfflineCount, authorId, normalizedUrl }) => {
 
     if (isOnline) {
       await ctx.db.patch(portfolioId, {
@@ -163,6 +163,29 @@ export const updateUrlHealthResult = internalMutation({
           urlStatus: "offline",
           consecutiveOfflineCount: newOfflineCount,
         });
+      }
+
+      // When a portfolio crosses the offline warning threshold, create one unread notification.
+      if (currentConsecutiveOfflineCount < ONLINE_BADGE_THRESHOLD && newOfflineCount >= ONLINE_BADGE_THRESHOLD) {
+        const existingNotification = await ctx.db
+          .query("notifications")
+          .withIndex("by_userId_and_type_and_portfolioId", (q) =>
+            q.eq("userId", authorId).eq("type", "portfolio_offline").eq("portfolioId", portfolioId),
+          )
+          .filter((q) => q.eq(q.field("isRead"), false))
+          .first();
+
+        if (existingNotification === null) {
+          await ctx.db.insert("notifications", {
+            userId: authorId,
+            type: "portfolio_offline",
+            title: "Portfolio possivelmente offline",
+            message: `Seu portfolio ${normalizedUrl} ficou offline por ${newOfflineCount} verificacoes consecutivas.`,
+            portfolioId,
+            isRead: false,
+            createdAt: Date.now(),
+          });
+        }
       }
     }
   },
@@ -209,6 +232,7 @@ export const checkUrlHealth = internalAction({
       isOnline,
       currentConsecutiveOfflineCount: consecutiveOfflineCount,
       authorId,
+      normalizedUrl,
     });
   },
 });

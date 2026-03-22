@@ -98,4 +98,17 @@ export default defineSchema({
     userId: v.id("users"),
     createdAt: v.number(),
   }).index("by_portfolioId_userId", ["portfolioId", "userId"]),
+
+  notifications: defineTable({
+    userId: v.id("users"),
+    type: v.union(v.literal("portfolio_offline")),
+    title: v.string(),
+    message: v.string(),
+    portfolioId: v.optional(v.id("portfolios")),
+    isRead: v.boolean(),
+    readAt: v.optional(v.number()),
+    createdAt: v.number(),
+  })
+    .index("by_userId_and_isRead_and_createdAt", ["userId", "isRead", "createdAt"])
+    .index("by_userId_and_type_and_portfolioId", ["userId", "type", "portfolioId"]),
 });

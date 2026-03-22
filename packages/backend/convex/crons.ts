@@ -11,9 +11,9 @@ import { internal } from "./_generated/api";
 
 const crons = cronJobs();
 
-crons.daily(
+crons.cron(
   "url-health-check",
-  { hourUTC: 3, minuteUTC: 0 },
+  "0 3 * * *",
   internal.portfolios.scheduled.checkAllUrlHealth,
   {},
 );

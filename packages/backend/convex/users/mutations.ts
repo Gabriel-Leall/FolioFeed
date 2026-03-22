@@ -80,3 +80,31 @@ export const upsertProfile = mutation({
     return user._id;
   },
 });
+
+export const markNotificationsAsRead = mutation({
+  args: {
+    notificationIds: v.array(v.id("notifications")),
+  },
+  returns: v.object({ updatedCount: v.number() }),
+  handler: async (ctx, args) => {
+    const user = await getInternalUser(ctx);
+
+    let updatedCount = 0;
+
+    for (const notificationId of args.notificationIds) {
+      const notification = await ctx.db.get(notificationId);
+
+      if (!notification || notification.userId !== user._id || notification.isRead) {
+        continue;
+      }
+
+      await ctx.db.patch(notificationId, {
+        isRead: true,
+        readAt: Date.now(),
+      });
+      updatedCount += 1;
+    }
+
+    return { updatedCount };
+  },
+});

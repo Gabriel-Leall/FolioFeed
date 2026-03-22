@@ -133,3 +133,54 @@ export const getMe = query({
     return user ?? null;
   },
 });
+
+// ---------------------------------------------------------------------------
+// users.getUnreadNotifications
+// Auth-aware query for notification badge and login toasts
+// ---------------------------------------------------------------------------
+
+export const getUnreadNotifications = query({
+  args: {},
+  returns: v.array(
+    v.object({
+      _id: v.id("notifications"),
+      type: v.union(v.literal("portfolio_offline")),
+      title: v.string(),
+      message: v.string(),
+      portfolioId: v.optional(v.id("portfolios")),
+      createdAt: v.number(),
+    }),
+  ),
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return [];
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .unique();
+
+    if (!user) {
+      return [];
+    }
+
+    const notifications = await ctx.db
+      .query("notifications")
+      .withIndex("by_userId_and_isRead_and_createdAt", (q) =>
+        q.eq("userId", user._id).eq("isRead", false),
+      )
+      .order("desc")
+      .take(10);
+
+    return notifications.map((notification) => ({
+      _id: notification._id,
+      type: notification.type,
+      title: notification.title,
+      message: notification.message,
+      portfolioId: notification.portfolioId,
+      createdAt: notification.createdAt,
+    }));
+  },
+});
