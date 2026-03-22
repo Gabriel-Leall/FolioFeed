@@ -29,6 +29,7 @@ export type PortfolioCardData = {
   critiqueCount: number;
   likeCount: number;
   topRatedScore: number;
+  lastCritiqueAt?: number;
   isDeleted: boolean;
   createdAt: number;
   authorId: Id<"users">;

@@ -4,6 +4,8 @@ import { v } from "convex/values";
 import { query } from "../_generated/server";
 import { AREA_VALUES } from "../lib/constants";
 
+const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1_000;
+
 export const getById = query({
   args: {
     portfolioId: v.id("portfolios"),
@@ -22,6 +24,7 @@ export const getById = query({
       critiqueCount: v.number(),
       likeCount: v.number(),
       topRatedScore: v.number(),
+      lastCritiqueAt: v.optional(v.number()),
       isDeleted: v.boolean(),
       createdAt: v.number(),
       urlStatus: v.optional(v.union(v.literal("online"), v.literal("offline"), v.literal("unchecked"))),
@@ -142,6 +145,8 @@ export const list = query({
   },
   handler: async (ctx, args) => {
     const { filter, area, paginationOpts } = args;
+    const now = Date.now();
+    const recentWindowStart = now - THIRTY_DAYS_MS;
 
     let filteredQuery;
 
@@ -184,7 +189,10 @@ export const list = query({
 
     if (filter === "topRated") {
       filteredQuery = filteredQuery.filter((q) =>
-        q.gt(q.field("critiqueCount"), 0),
+        q.and(
+          q.gt(q.field("critiqueCount"), 0),
+          q.gte(q.field("lastCritiqueAt"), recentWindowStart),
+        ),
       );
     }
 

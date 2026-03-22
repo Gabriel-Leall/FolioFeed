@@ -76,7 +76,9 @@ export const getProfile = query({
               ? null // T035 — deleted portfolio
               : portfolio.title,
           portfolioArea:
-            portfolio?.isDeleted || !portfolio ? null : (portfolio.area as string),
+            portfolio?.isDeleted || !portfolio
+              ? null
+              : (portfolio.area as string),
         };
       }),
     );

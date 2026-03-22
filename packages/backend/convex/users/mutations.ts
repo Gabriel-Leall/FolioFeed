@@ -34,7 +34,41 @@ export const upsertProfile = mutation({
   },
   returns: v.id("users"),
   handler: async (ctx, args) => {
-    const user = await getInternalUser(ctx);
+    const identity = await ctx.auth.getUserIdentity();
+    if (identity === null) {
+      throw new ConvexError("UNAUTHENTICATED");
+    }
+
+    // Try to find existing user
+    let user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .unique();
+
+    // If user doesn't exist, create them
+    if (user === null) {
+      const nickname =
+        (identity.given_name as string | undefined) ||
+        (identity.name as string | undefined) ||
+        undefined;
+      const avatarUrl = identity.picture_url as string | undefined;
+
+      const userId = await ctx.db.insert("users", {
+        clerkId: identity.subject,
+        nickname,
+        avatarUrl,
+        availabilityStatus: "unavailable",
+        portfoliosCount: 0,
+        critiquesGivenCount: 0,
+        upvotesReceivedCount: 0,
+        createdAt: Date.now(),
+      });
+
+      user = await ctx.db.get(userId);
+      if (!user) {
+        throw new ConvexError("USER_CREATION_FAILED");
+      }
+    }
 
     // Validate nickname if provided
     if (args.nickname !== undefined) {
@@ -94,7 +128,11 @@ export const markNotificationsAsRead = mutation({
     for (const notificationId of args.notificationIds) {
       const notification = await ctx.db.get(notificationId);
 
-      if (!notification || notification.userId !== user._id || notification.isRead) {
+      if (
+        !notification ||
+        notification.userId !== user._id ||
+        notification.isRead
+      ) {
         continue;
       }
 

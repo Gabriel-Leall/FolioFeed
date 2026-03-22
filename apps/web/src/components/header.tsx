@@ -1,5 +1,5 @@
 "use client";
-import { useUser } from "@clerk/nextjs";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { api } from "@PeerFolio/backend/convex/_generated/api";
 import { Button } from "@PeerFolio/ui/components/button";
 import {
@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@PeerFolio/ui/components/dropdown-menu";
 import { useMutation, useQuery } from "convex/react";
-import { Bell } from "lucide-react";
+import { Bell, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
@@ -21,6 +21,7 @@ import { ModeToggle } from "./mode-toggle";
 
 export default function Header() {
   const { isSignedIn } = useUser();
+  const { signOut } = useClerk();
   const unreadNotifications = useQuery(
     api.users.queries.getUnreadNotifications,
     {},
@@ -148,6 +149,14 @@ export default function Header() {
             </DropdownMenu>
           )}
           <ModeToggle />
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => signOut({ redirectUrl: "/" })}
+            aria-label="Sair"
+          >
+            <LogOut className="size-4" />
+          </Button>
         </div>
       </div>
       <hr />

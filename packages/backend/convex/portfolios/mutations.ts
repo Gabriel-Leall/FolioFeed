@@ -26,6 +26,7 @@ export const submit = mutation({
   returns: v.object({ portfolioId: v.id("portfolios") }),
   handler: async (ctx, args) => {
     const user = await getInternalUser(ctx);
+    const hasScreenshotProvider = Boolean(process.env.SCREENSHOT_ONE_KEY);
 
     // Field limit validation
     if (args.title.length > 80) {
@@ -77,9 +78,10 @@ export const submit = mutation({
       critiqueCount: 0,
       likeCount: 0,
       topRatedScore: 0,
+      lastCritiqueAt: undefined,
       isDeleted: false,
       isArchived: false,
-      previewStatus: "pending",
+      previewStatus: hasScreenshotProvider ? "pending" : "failed",
       previewAttemptCount: 0,
       urlStatus: "unchecked",
       consecutiveOfflineCount: 0,
@@ -91,12 +93,14 @@ export const submit = mutation({
       portfoliosCount: user.portfoliosCount + 1,
     });
 
-    // T036: Kick off preview generation immediately (fires after this mutation commits)
-    await ctx.scheduler.runAfter(
-      0,
-      internal.portfolios.scheduled.generatePreview,
-      { portfolioId, normalizedUrl, attemptCount: 0 },
-    );
+    // T036: Kick off preview generation only when provider is configured.
+    if (hasScreenshotProvider) {
+      await ctx.scheduler.runAfter(
+        0,
+        internal.portfolios.scheduled.generatePreview,
+        { portfolioId, normalizedUrl, attemptCount: 0 },
+      );
+    }
 
     return { portfolioId };
   },

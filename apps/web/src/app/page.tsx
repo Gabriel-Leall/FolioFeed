@@ -30,6 +30,8 @@ export default function Home() {
   const [currentFilter, setCurrentFilter] = useState<FeedFilter>("latest");
   const [currentArea, setCurrentArea] = useState<AreaFilter | null>(null);
 
+  const isFiltered = currentFilter !== "latest" || currentArea !== null;
+
   const { results, status, loadMore } = usePaginatedQuery(
     api.portfolios.queries.list,
     {
@@ -130,12 +132,22 @@ export default function Home() {
           </div>
           <h3 className="mt-4 text-lg font-semibold">Nenhum resultado</h3>
           <p className="mt-2 text-sm text-muted-foreground max-w-sm">
-            Nenhum portfólio encontrado para os filtros selecionados.
+            {currentArea !== null
+              ? "Nenhum portfólio encontrado para esta área ainda."
+              : currentFilter === "topRated"
+                ? "Ainda não há portfólios bem avaliados nos últimos 30 dias."
+                : "Nenhum portfólio encontrado para os filtros selecionados."}
           </p>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            {currentArea !== null && (
-              <Button variant="outline" onClick={() => setCurrentArea(null)}>
+            {isFiltered && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setCurrentArea(null);
+                  setCurrentFilter("latest");
+                }}
+              >
                 Ver todos os portfólios
               </Button>
             )}

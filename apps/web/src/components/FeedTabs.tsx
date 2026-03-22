@@ -32,6 +32,7 @@ export function FeedTabs({ currentFilter, onFilterChange }: FeedTabsProps) {
     {
       id: "topRated",
       label: "Melhor Avaliados",
+      badge: "30d",
     },
   ];
 

@@ -60,8 +60,9 @@ export const submit = mutation({
     const oneHourAgo = Date.now() - ONE_HOUR_MS;
     const recentCritiques = await ctx.db
       .query("critiques")
-      .withIndex("by_authorId", (q) => q.eq("authorId", user._id))
-      .filter((q) => q.gt(q.field("createdAt"), oneHourAgo))
+      .withIndex("by_authorId_and_createdAt", (q) =>
+        q.eq("authorId", user._id).gt("createdAt", oneHourAgo),
+      )
       .collect();
 
     if (recentCritiques.length >= MAX_CRITIQUES_PER_HOUR) {
@@ -96,6 +97,7 @@ export const submit = mutation({
       critiqueCount: newCritiqueCount,
       averageRating: newAverageRating,
       topRatedScore: newTopRatedScore,
+      lastCritiqueAt: now,
     });
 
     // Increment user's critiquesGivenCount

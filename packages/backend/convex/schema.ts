@@ -52,6 +52,7 @@ export default defineSchema({
     critiqueCount: v.number(),
     likeCount: v.number(),
     topRatedScore: v.number(),
+    lastCritiqueAt: v.optional(v.number()),
 
     // Preview Status
     previewStatus: v.optional(
@@ -61,7 +62,11 @@ export default defineSchema({
 
     // URL Health
     urlStatus: v.optional(
-      v.union(v.literal("online"), v.literal("offline"), v.literal("unchecked")),
+      v.union(
+        v.literal("online"),
+        v.literal("offline"),
+        v.literal("unchecked"),
+      ),
     ),
     consecutiveOfflineCount: v.optional(v.number()),
 
@@ -72,7 +77,13 @@ export default defineSchema({
   })
     .index("by_authorId", ["authorId"])
     .index("by_createdAt", ["createdAt"])
+    .index("by_isDeleted_and_isArchived_and_createdAt", [
+      "isDeleted",
+      "isArchived",
+      "createdAt",
+    ])
     .index("by_topRatedScore", ["topRatedScore"])
+    .index("by_lastCritiqueAt", ["lastCritiqueAt"])
     .index("by_normalizedUrl", ["normalizedUrl"]),
 
   critiqueUpvotes: defineTable({
@@ -91,6 +102,7 @@ export default defineSchema({
   })
     .index("by_portfolioId", ["portfolioId"])
     .index("by_authorId", ["authorId"])
+    .index("by_authorId_and_createdAt", ["authorId", "createdAt"])
     .index("by_createdAt", ["createdAt"]),
 
   portfolioLikes: defineTable({
@@ -109,6 +121,14 @@ export default defineSchema({
     readAt: v.optional(v.number()),
     createdAt: v.number(),
   })
-    .index("by_userId_and_isRead_and_createdAt", ["userId", "isRead", "createdAt"])
-    .index("by_userId_and_type_and_portfolioId", ["userId", "type", "portfolioId"]),
+    .index("by_userId_and_isRead_and_createdAt", [
+      "userId",
+      "isRead",
+      "createdAt",
+    ])
+    .index("by_userId_and_type_and_portfolioId", [
+      "userId",
+      "type",
+      "portfolioId",
+    ]),
 });
