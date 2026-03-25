@@ -1,4 +1,4 @@
-import type { Id } from "@PeerFolio/backend/convex/_generated/dataModel";
+import type { Id } from "@peerFolio/backend/convex/_generated/dataModel";
 import type { Metadata } from "next";
 
 import PortfolioDetailClient from "./PortfolioDetailClient";
@@ -9,9 +9,19 @@ type PortfolioDetailPageProps = {
   }>;
 };
 
-export const metadata: Metadata = {
-  title: "Portfólio | PeerFolio",
-};
+export async function generateMetadata({
+  params,
+}: PortfolioDetailPageProps): Promise<Metadata> {
+  const { id } = await params;
+
+  return {
+    title: `Portfólio | PeerFolio`,
+    description: "Veja e critiqu este portfólio no PeerFolio.",
+    alternates: {
+      canonical: `/portfolio/${id}`,
+    },
+  };
+}
 
 export default async function PortfolioDetailPage({
   params,

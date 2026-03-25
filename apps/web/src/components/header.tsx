@@ -71,7 +71,7 @@ export default function Header() {
 
   const links = [
     { to: "/", label: "Home" },
-    { to: "/dashboard", label: "Dashboard" },
+    { to: "/feed", label: "Feed" },
   ] as const;
 
   return (
@@ -149,14 +149,22 @@ export default function Header() {
             </DropdownMenu>
           )}
           <ModeToggle />
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => signOut({ redirectUrl: "/" })}
-            aria-label="Sair"
-          >
-            <LogOut className="size-4" />
-          </Button>
+          {isSignedIn ? (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => signOut({ redirectUrl: "/" })}
+              aria-label="Sair"
+            >
+              <LogOut className="size-4" />
+            </Button>
+          ) : (
+            <Link href={"/sign-in" as any}>
+              <Button variant="outline" size="sm">
+                Entrar
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
       <hr />

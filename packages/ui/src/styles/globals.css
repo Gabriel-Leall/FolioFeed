@@ -76,7 +76,12 @@
 }
 
 @theme inline {
-  --font-sans: "Inter Variable", sans-serif;
+  --font-sans: var(--font-manrope), sans-serif;
+  --font-headline: var(--font-newsreader), serif;
+  --font-body: var(--font-manrope), sans-serif;
+  --font-label: var(--font-manrope), sans-serif;
+
+  /* Baseline colors from shadcn */
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -108,6 +113,29 @@
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
+
+  /* Peerfolio Custom Semantic Colors */
+  --color-surface: #131313;
+  --color-on-surface: #ffffff;
+  --color-on-surface-variant: #a1a1aa; /* zinc-400 */
+  --color-surface-container-lowest: #000000;
+  --color-surface-container-low: #121212;
+  --color-surface-container: #18181b; /* zinc-900 */
+  --color-surface-container-high: #27272a; /* zinc-800 */
+  --color-surface-container-highest: #3f3f46; /* zinc-700 */
+  
+  --color-primary: #845ef7; /* Aura Noir primary */
+  --color-on-primary: #ffffff;
+  --color-inverse-primary: #131313;
+
+  --color-secondary: #7950f2; /* Aura Noir secondary */
+  
+  --color-tertiary: #d4d4d8; /* zinc-300 */
+  --color-on-tertiary: #09090b;
+
+  --color-outline: #3f3f46; /* zinc-700 */
+  --color-outline-variant: #27272a; /* zinc-800 */
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -126,5 +154,11 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-surface/50 backdrop-blur-md border border-white/10 shadow-lg;
   }
 }

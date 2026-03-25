@@ -2,18 +2,23 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 
 import "../index.css";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Newsreader, Manrope, Space_Grotesk } from "next/font/google";
 
 import Header from "@/components/header";
 import Providers from "@/components/providers";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin"],
+});
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
 });
 
@@ -29,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${newsreader.variable} ${manrope.variable} ${spaceGrotesk.variable} antialiased bg-surface text-on-surface`}>
         <ClerkProvider>
           <Providers>
             <div className="grid grid-rows-[auto_1fr] h-svh">

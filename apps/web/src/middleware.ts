@@ -2,7 +2,7 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@PeerFolio/backend/convex/_generated/api";
 
-const isProtectedRoute = createRouteMatcher(["/submit(.*)", "/dashboard(.*)", "/setup-profile(.*)"]);
+const isProtectedRoute = createRouteMatcher(["/submit(.*)", "/setup-profile(.*)"]);
 const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "";
 const convex = new ConvexHttpClient(convexUrl);
 
