@@ -55,7 +55,9 @@ function FeatureCard({
             {icon}
           </div>
           <h3 className="mb-2 text-lg font-semibold tracking-tight">{title}</h3>
-          <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            {description}
+          </p>
         </div>
       </div>
     </Reveal>
@@ -69,7 +71,8 @@ export function FeaturesSection() {
         <Reveal>
           <div className="mb-14 text-center">
             <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
-              Por que escolher o <span className="text-primary">PeerFolio</span>?
+              Por que escolher o <span className="text-primary">PeerFolio</span>
+              ?
             </h2>
             <p className="mx-auto max-w-2xl text-muted-foreground">
               Uma plataforma construida para desenvolvedores que buscam crescer

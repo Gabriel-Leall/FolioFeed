@@ -6,8 +6,16 @@ import { Reveal } from "./reveal";
 
 const stats = [
   { icon: <Code2 className="h-5 w-5" />, value: "2.5K+", label: "Portfolios" },
-  { icon: <MessageSquare className="h-5 w-5" />, value: "8K+", label: "Criticas" },
-  { icon: <Users className="h-5 w-5" />, value: "1.2K+", label: "Desenvolvedores" },
+  {
+    icon: <MessageSquare className="h-5 w-5" />,
+    value: "8K+",
+    label: "Criticas",
+  },
+  {
+    icon: <Users className="h-5 w-5" />,
+    value: "1.2K+",
+    label: "Desenvolvedores",
+  },
 ];
 
 export function StatsMarquee() {
@@ -28,7 +36,9 @@ export function StatsMarquee() {
                   <div className="text-2xl font-bold tracking-tight md:text-3xl">
                     {stat.value}
                   </div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {stat.label}
+                  </div>
                 </div>
               </div>
             ))}
