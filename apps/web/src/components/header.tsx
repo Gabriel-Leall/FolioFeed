@@ -169,9 +169,7 @@ export default function Header() {
                 size="sm"
                 className="bg-primary text-primary-foreground"
               >
-                <Avatar.Fallback className="text-xs">
-                  {me?.nickname?.charAt(0).toUpperCase() ?? user?.firstName?.charAt(0).toUpperCase() ?? "?"}
-                </Avatar.Fallback>
+                {me?.nickname?.charAt(0).toUpperCase() ?? user?.firstName?.charAt(0).toUpperCase() ?? "?"}
               </Avatar>
             )}
           </DropdownMenuTrigger>
