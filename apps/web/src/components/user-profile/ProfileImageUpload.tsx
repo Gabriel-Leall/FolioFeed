@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@PeerFolio/backend/convex/_generated/api";
 import { Camera } from "lucide-react";
+import { toast } from "sonner";
 
 interface ProfileImageUploadProps {
   type: "avatar" | "banner";
@@ -37,12 +38,12 @@ export function ProfileImageUpload({
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      alert("Por favor, selecione uma imagem.");
+      toast.error("Por favor, selecione uma imagem.");
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      alert("A imagem deve ter no máximo 5MB.");
+      toast.error("A imagem deve ter no máximo 5MB.");
       return;
     }
 
@@ -71,10 +72,13 @@ export function ProfileImageUpload({
         [fieldToUpdate]: url,
       });
 
+      toast.success(
+        type === "avatar" ? "Avatar atualizado com sucesso!" : "Banner atualizado com sucesso!",
+      );
       onUploadComplete(url);
     } catch (error) {
       console.error("Upload failed:", error);
-      alert("Erro ao fazer upload da imagem. Tente novamente.");
+      toast.error("Erro ao fazer upload da imagem. Tente novamente.");
     } finally {
       setIsUploading(false);
     }

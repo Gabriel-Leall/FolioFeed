@@ -38,12 +38,12 @@ export default function ProfilePage() {
   const isOwner = isSignedIn && meQuery?._id === profile?._id;
 
   const handleAvailabilityToggle = async () => {
-    if (!isOwner || isTogglingAvailability || !profile) return;
+    if (!isOwner || isTogglingAvailability) return;
     setIsTogglingAvailability(true);
     try {
       await upsertProfile({
         availabilityStatus:
-          profile.availabilityStatus === "available"
+          profile!.availabilityStatus === "available"
             ? "unavailable"
             : "available",
       });

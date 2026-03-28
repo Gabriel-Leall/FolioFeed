@@ -22,7 +22,7 @@ export function UserProfileBanner({ bannerUrl, isOwner, onBannerChange }: UserPr
       <ProfileImageUpload
         type="banner"
         currentImageUrl={bannerUrl}
-        onUploadComplete={onBannerChange || (() => {})}
+        onUploadComplete={onBannerChange}
         isOwner={isOwner || false}
         className="absolute inset-0 z-10 bg-transparent outline-none transition-colors hover:bg-black/10 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary/70 disabled:cursor-not-allowed disabled:opacity-70"
       />

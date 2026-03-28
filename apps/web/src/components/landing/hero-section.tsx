@@ -55,7 +55,7 @@ export function HeroSection() {
           <Link href={"/portfolio" as any} className="w-full sm:w-auto">
             <Button
               variant="outline"
-              className="bg-[#18181A] border border-white/10 text-white font-body text-[15px] font-medium px-8 h-13 w-full sm:w-auto hover:bg-[#27272A] transition-colors"
+              className="w-full bg-[#18181A] border border-white/10 text-white font-body text-[15px] font-medium px-8 h-13 hover:bg-[#27272A] transition-colors"
             >
               Explore Archive
             </Button>

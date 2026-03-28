@@ -28,7 +28,7 @@ export default clerkMiddleware(async (auth, req) => {
           }
         }
       } catch (error) {
-        console.error("Proxy Convex check failed", error);
+        console.error("Proxy Convex check failed:", error);
       }
     }
   }
