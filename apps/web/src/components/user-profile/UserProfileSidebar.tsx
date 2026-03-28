@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import type { UserProfileSocialLinks } from "./types";
 import { getInitial } from "./utils";
 import { UserProfileOwnerActions } from "./UserProfileOwnerActions";
+import { ProfileImageUpload } from "./ProfileImageUpload";
 
 type UserProfileSidebarProps = {
   displayName: string;
@@ -18,6 +19,7 @@ type UserProfileSidebarProps = {
   availabilityStatus: "available" | "unavailable";
   isTogglingAvailability: boolean;
   onToggleAvailability: () => void;
+  onAvatarChange?: (url: string) => void;
 };
 
 function SocialLink({ href, label, children }: { href?: string; label: string; children: ReactNode }) {
@@ -37,7 +39,7 @@ function SocialLink({ href, label, children }: { href?: string; label: string; c
 
 function MetricRow({ label, value }: { label: string; value: number }) {
   return (
-    <div className="flex items-center justify-between rounded-md border border-outline-variant/20 bg-surface-container-low px-4 py-3">
+    <div className="flex items-center justify-between py-1">
       <span className="text-sm text-on-surface-variant">{label}</span>
       <span className="font-serif text-xl italic text-primary">{value}</span>
     </div>
@@ -57,18 +59,26 @@ export function UserProfileSidebar({
   availabilityStatus,
   isTogglingAvailability,
   onToggleAvailability,
+  onAvatarChange,
 }: UserProfileSidebarProps) {
   return (
     <aside className="rounded-xl border border-outline-variant/20 bg-surface-container p-6 md:p-8">
-      <div className="flex items-center gap-4">
-        <div className="h-20 w-20 overflow-hidden rounded-full border-2 border-outline-variant/40 bg-surface-container-high">
+      <div className="flex items-center gap-6">
+        <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-full border-4 border-outline-variant/40 bg-surface-container-high">
           {avatarUrl ? (
             <img src={avatarUrl} alt={`Avatar de ${displayName}`} className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-2xl font-semibold text-primary">
+            <div className="flex h-full w-full items-center justify-center text-4xl font-semibold text-primary">
               {getInitial(displayName)}
             </div>
           )}
+          <ProfileImageUpload
+            type="avatar"
+            currentImageUrl={avatarUrl}
+            onUploadComplete={onAvatarChange || (() => {})}
+            isOwner={isOwner || false}
+            className="absolute inset-0 z-10 rounded-full bg-transparent outline-none transition-colors hover:bg-black/10 focus-visible:ring-2 focus-visible:ring-primary/70 disabled:cursor-not-allowed disabled:opacity-70"
+          />
         </div>
 
         <div className="min-w-0">

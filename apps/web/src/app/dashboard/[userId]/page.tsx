@@ -90,10 +90,13 @@ export default function ProfilePage() {
   const displayName = profile.nickname ?? "Anônimo";
 
   return (
-    <div className="space-y-0">
-      <UserProfileBanner bannerUrl={profile.bannerUrl} />
+    <div className="space-y-0 overflow-x-hidden">
+      <UserProfileBanner 
+        bannerUrl={profile.bannerUrl} 
+        isOwner={isOwner}
+      />
 
-      <div className="grid gap-6 lg:grid-cols-[35%_65%] lg:h-[calc(100vh-5rem)]">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:h-[calc(100vh-5rem)]">
         <div className="lg:sticky lg:top-20 lg:self-start">
           <UserProfileSidebar
             displayName={displayName}
