@@ -75,7 +75,7 @@ export function ProfileImageUpload({
       toast.success(
         type === "avatar" ? "Avatar atualizado com sucesso!" : "Banner atualizado com sucesso!",
       );
-      onUploadComplete(url);
+      onUploadComplete?.(url);
     } catch (error) {
       console.error("Upload failed:", error);
       toast.error("Erro ao fazer upload da imagem. Tente novamente.");
