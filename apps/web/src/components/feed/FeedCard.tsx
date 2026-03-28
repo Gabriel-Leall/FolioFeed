@@ -4,11 +4,12 @@ import { useUser } from "@clerk/nextjs";
 import { api } from "@PeerFolio/backend/convex/_generated/api";
 import type { Id } from "@PeerFolio/backend/convex/_generated/dataModel";
 import { cn } from "@PeerFolio/ui/lib/utils";
-import { useMutation } from "convex/react";
-import { Globe, Heart, MessageSquare, Star } from "lucide-react";
+import { useMutation, useQuery } from "convex/react";
+import { Bookmark, Flag, Globe, Heart, MessageSquare, Star } from "lucide-react";
 import { useState } from "react";
 
 import AuthModal from "@/components/AuthModal";
+import { ReportModal } from "@/components/ReportModal";
 import { TruncatedText } from "@/components/TruncatedText";
 
 // ---------------------------------------------------------------------------
@@ -34,6 +35,7 @@ export type FeedCardData = {
   createdAt: number;
   authorId: Id<"users">;
   hasLiked?: boolean;
+  hasFavorited?: boolean;
   urlStatus?: "online" | "offline" | "unchecked";
   consecutiveOfflineCount?: number;
   author: {
@@ -57,11 +59,17 @@ interface FeedCardProps {
 export function FeedCard({ portfolio, onOpenModal }: FeedCardProps) {
   const { isSignedIn } = useUser();
   const toggleLike = useMutation(api.likes.mutations.toggle);
+  const toggleFavorite = useMutation(api.favorites.mutations.toggle);
+
+  const me = useQuery(api.users.queries.getMe);
 
   const [localLikeCount, setLocalLikeCount] = useState(portfolio.likeCount);
   const [localHasLiked, setLocalHasLiked] = useState(!!portfolio.hasLiked);
+  const [localHasFavorited, setLocalHasFavorited] = useState(!!portfolio.hasFavorited);
   const [isLiking, setIsLiking] = useState(false);
+  const [isFavoriting, setIsFavoriting] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   const displayName = portfolio.author.nickname ?? "Anônimo";
   const showOfflineBadge =
@@ -111,6 +119,48 @@ export function FeedCard({ portfolio, onOpenModal }: FeedCardProps) {
     onOpenModal?.(portfolio);
   };
 
+  const isOwnPortfolio = me?._id === portfolio.authorId;
+
+  const handleFavorite = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (isMock) {
+      setLocalHasFavorited((prev) => !prev);
+      return;
+    }
+
+    if (!isSignedIn) {
+      setShowAuthModal(true);
+      return;
+    }
+    if (isFavoriting || isOwnPortfolio) return;
+    setIsFavoriting(true);
+
+    const wasFavorited = localHasFavorited;
+    setLocalHasFavorited(!wasFavorited);
+
+    try {
+      await toggleFavorite({ portfolioId: portfolio._id });
+    } catch {
+      setLocalHasFavorited(wasFavorited);
+    } finally {
+      setIsFavoriting(false);
+    }
+  };
+
+  const handleReport = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isSignedIn) {
+      setShowAuthModal(true);
+      return;
+    }
+    if (isOwnPortfolio) return;
+    setShowReportModal(true);
+  };
+
   return (
     <>
       <article
@@ -142,19 +192,39 @@ export function FeedCard({ portfolio, onOpenModal }: FeedCardProps) {
           )}
 
           {/* Badges Row */}
-          <div className="absolute left-3 top-3 right-3 flex items-start justify-between">
+          <div className="absolute left-3 top-3 right-3 z-20 flex items-start justify-between">
             <span className="inline-flex items-center rounded-md bg-background/90 px-2.5 py-1 text-[11px] font-semibold shadow backdrop-blur-sm">
               {portfolio.area}
             </span>
-            {showOfflineBadge && (
-              <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/90 px-2.5 py-1 text-[11px] font-medium text-white shadow backdrop-blur-sm">
-                Site fora do ar
-              </span>
-            )}
+            <div className="flex items-center gap-2">
+              {showOfflineBadge && (
+                <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/90 px-2.5 py-1 text-[11px] font-medium text-white shadow backdrop-blur-sm">
+                  Site fora do ar
+                </span>
+              )}
+              {!isOwnPortfolio && (
+                <button
+                  type="button"
+                  onClick={handleFavorite}
+                  disabled={isFavoriting}
+                  aria-label={localHasFavorited ? "Remover favorito" : "Adicionar aos favoritos"}
+                  className="group p-2 rounded-md bg-background/90 backdrop-blur-sm hover:bg-white/20 transition-colors cursor-pointer"
+                >
+                  <Bookmark
+                    className={cn(
+                      "h-4 w-4 transition-all duration-200",
+                      localHasFavorited
+                        ? "fill-primary text-primary"
+                        : "text-muted-foreground group-hover:text-primary hover:scale-110"
+                    )}
+                  />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Hover Overlay CTA */}
-          <div className="absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
+          <div className="pointer-events-none absolute inset-0 z-10 bg-linear-to-t from-background/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 flex items-end p-5 group-hover:opacity-100">
             <span
               className="w-full py-2.5 rounded-md bg-primary/20 backdrop-blur-md border border-primary/20 text-primary font-medium text-sm text-center"
               aria-hidden
@@ -184,6 +254,16 @@ export function FeedCard({ portfolio, onOpenModal }: FeedCardProps) {
                 </span>
               )}
               {displayName}
+              {!isOwnPortfolio && (
+                <button
+                  type="button"
+                  onClick={handleReport}
+                  aria-label="Denunciar portfólio"
+                  className="ml-1 p-1 rounded hover:bg-white/10 transition-colors"
+                >
+                  <Flag className="h-3.5 w-3.5 text-muted-foreground hover:text-red-400" />
+                </button>
+              )}
             </p>
           </div>
 
@@ -233,6 +313,15 @@ export function FeedCard({ portfolio, onOpenModal }: FeedCardProps) {
           </div>
         </div>
       </article>
+
+      {showReportModal && (
+        <ReportModal
+          targetId={portfolio._id}
+          targetType="portfolio"
+          open={showReportModal}
+          onOpenChange={setShowReportModal}
+        />
+      )}
 
       <AuthModal
         open={showAuthModal}
