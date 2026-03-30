@@ -4,8 +4,6 @@ import { v } from "convex/values";
 import { query } from "../_generated/server";
 import { AREA_VALUES } from "../lib/constants";
 
-const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1_000;
-
 export const getById = query({
   args: {
     portfolioId: v.id("portfolios"),
@@ -147,14 +145,17 @@ const areaValidator = v.union(
 
 export const list = query({
   args: {
-    filter: v.union(v.literal("latest"), v.literal("topRated")),
+    filter: v.union(
+      v.literal("latest"),
+      v.literal("topRated"),
+      v.literal("mostLiked"),
+      v.literal("mostCommented"),
+    ),
     area: v.optional(areaValidator),
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
     const { filter, area, paginationOpts } = args;
-    const now = Date.now();
-    const recentWindowStart = now - THIRTY_DAYS_MS;
 
     let filteredQuery;
 
@@ -180,6 +181,28 @@ export const list = query({
             q.neq(q.field("isArchived"), true),
           ),
         );
+    } else if (filter === "mostLiked") {
+      filteredQuery = ctx.db
+        .query("portfolios")
+        .withIndex("by_likeCount")
+        .order("desc")
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("isDeleted"), false),
+            q.neq(q.field("isArchived"), true),
+          ),
+        );
+    } else if (filter === "mostCommented") {
+      filteredQuery = ctx.db
+        .query("portfolios")
+        .withIndex("by_critiqueCount")
+        .order("desc")
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("isDeleted"), false),
+            q.neq(q.field("isArchived"), true),
+          ),
+        );
     } else {
       filteredQuery = ctx.db
         .query("portfolios")
@@ -193,15 +216,6 @@ export const list = query({
 
     if (area) {
       filteredQuery = filteredQuery.filter((q) => q.eq(q.field("area"), area));
-    }
-
-    if (filter === "topRated") {
-      filteredQuery = filteredQuery.filter((q) =>
-        q.and(
-          q.gt(q.field("critiqueCount"), 0),
-          q.gte(q.field("lastCritiqueAt"), recentWindowStart),
-        ),
-      );
     }
 
     const paginatedResult = await filteredQuery.paginate(paginationOpts);

@@ -89,6 +89,8 @@ export default defineSchema({
       "createdAt",
     ])
     .index("by_topRatedScore", ["topRatedScore"])
+    .index("by_likeCount", ["likeCount"])
+    .index("by_critiqueCount", ["critiqueCount"])
     .index("by_lastCritiqueAt", ["lastCritiqueAt"])
     .index("by_normalizedUrl", ["normalizedUrl"])
     .index("by_isSeeded_and_normalizedUrl", ["isSeeded", "normalizedUrl"]),

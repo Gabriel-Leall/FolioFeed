@@ -12,6 +12,8 @@ import type * as critiques_mutations from "../critiques/mutations.js";
 import type * as crons from "../crons.js";
 import type * as favorites_mutations from "../favorites/mutations.js";
 import type * as favorites_queries from "../favorites/queries.js";
+import type * as feedback_mutations from "../feedback/mutations.js";
+import type * as feedback_queries from "../feedback/queries.js";
 import type * as healthCheck from "../healthCheck.js";
 import type * as http from "../http.js";
 import type * as lib_auth from "../lib/auth.js";
@@ -41,6 +43,8 @@ declare const fullApi: ApiFromModules<{
   crons: typeof crons;
   "favorites/mutations": typeof favorites_mutations;
   "favorites/queries": typeof favorites_queries;
+  "feedback/mutations": typeof feedback_mutations;
+  "feedback/queries": typeof feedback_queries;
   healthCheck: typeof healthCheck;
   http: typeof http;
   "lib/auth": typeof lib_auth;

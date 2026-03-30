@@ -36,11 +36,13 @@ const CATEGORIES = [
 const FILTERS = [
   { label: "recentes", value: "latest" },
   { label: "melhores avaliados", value: "topRated" },
+  { label: "mais curtidos", value: "mostLiked" },
+  { label: "mais comentados", value: "mostCommented" },
 ] as const;
 
 const FEEDBACK_POSITIONS = [11, 47, 59];
 
-type FeedFilter = "latest" | "topRated";
+type FeedFilter = "latest" | "topRated" | "mostLiked" | "mostCommented";
 type CategoryValue =
   | "Frontend"
   | "Backend"
@@ -285,7 +287,7 @@ export default function FeedPage() {
             variant="ghost"
             size="lg"
             onClick={() => setFeedbackModalOpen(true)}
-            className="text-white/70 border border-white/10 hover:bg-white/5 hover:text-white hover:border-white/20 transition-all duration-300 rounded-lg px-6"
+            className="text-white/70 border border-white/10 hover:bg-white/5 hover:text-white hover:border-white/20 transition-all duration-150 ease-out rounded-lg px-6 active:scale-[0.97]"
           >
             Contribuir feedback
           </Button>
@@ -363,7 +365,7 @@ export default function FeedPage() {
                       key={f.value}
                       onClick={() => setCurrentFilter(f.value)}
                       className={cn(
-                        "rounded-lg cursor-pointer transition-colors px-3 py-2 text-sm font-sans",
+                        "rounded-lg cursor-pointer transition-colors duration-150 ease-out px-3 py-2 text-sm font-sans",
                         currentFilter === f.value
                           ? "bg-primary/20 text-primary focus:bg-primary/30 focus:text-primary font-medium"
                           : "hover:bg-white/5 focus:bg-white/5 text-white/80",
@@ -397,7 +399,7 @@ export default function FeedPage() {
                       key={cat.label}
                       onClick={() => setSelectedArea(cat.value)}
                       className={cn(
-                        "rounded-lg cursor-pointer transition-colors px-3 py-2 text-sm font-sans",
+                        "rounded-lg cursor-pointer transition-colors duration-150 ease-out px-3 py-2 text-sm font-sans",
                         selectedArea === cat.value
                           ? "bg-primary/20 text-primary focus:bg-primary/30 focus:text-primary font-medium"
                           : "hover:bg-white/5 focus:bg-white/5 text-white/80",
