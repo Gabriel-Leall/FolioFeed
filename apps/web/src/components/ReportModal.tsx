@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { api } from "@PeerFolio/backend/convex/_generated/api";
 import { useMutation } from "convex/react";
+import { useUser } from "@clerk/nextjs";
 import { Button } from "@PeerFolio/ui/components/button";
 import { cn } from "@PeerFolio/ui/lib/utils";
 import { toast } from "sonner";
@@ -32,6 +33,7 @@ interface ReportModalProps {
 }
 
 export function ReportModal({ targetId, targetType, open, onOpenChange }: ReportModalProps) {
+  const { isSignedIn } = useUser();
   const [selectedReason, setSelectedReason] = useState<string | null>(null);
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,6 +43,11 @@ export function ReportModal({ targetId, targetType, open, onOpenChange }: Report
   const reasons = targetType === "portfolio" ? PORTFOLIO_REASONS : CRITIQUE_REASONS;
 
   const handleSubmit = async () => {
+    if (!isSignedIn) {
+      toast.error("Faça login para denunciar");
+      return;
+    }
+
     if (!selectedReason) return;
     if (selectedReason === "OTHER" && !description.trim()) {
       toast.error("Por favor, descreva o motivo");
