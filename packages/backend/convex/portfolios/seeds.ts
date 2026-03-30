@@ -70,6 +70,16 @@ export const createSeed = internalMutation({
       consecutiveOfflineCount: 0,
     });
 
+    await ctx.scheduler.runAfter(
+      0,
+      internal.portfolios.scheduled.generatePreview,
+      {
+        portfolioId,
+        normalizedUrl,
+        attemptCount: 0,
+      },
+    );
+
     return portfolioId;
   },
 });
@@ -135,5 +145,32 @@ export const hardDeleteSeed = internalMutation({
   handler: async (ctx, args) => {
     await ctx.db.delete(args.portfolioId);
     return null;
+  },
+});
+
+export const triggerAllPendingPreviews = internalMutation({
+  args: {},
+  returns: v.number(),
+  handler: async (ctx) => {
+    const pendingPortfolios = await ctx.db
+      .query("portfolios")
+      .filter((q) => q.eq(q.field("previewStatus"), "pending"))
+      .collect();
+
+    let triggered = 0;
+    for (const portfolio of pendingPortfolios) {
+      await ctx.scheduler.runAfter(
+        triggered * 2000,
+        internal.portfolios.scheduled.generatePreview,
+        {
+          portfolioId: portfolio._id,
+          normalizedUrl: portfolio.normalizedUrl,
+          attemptCount: 0,
+        },
+      );
+      triggered++;
+    }
+
+    return triggered;
   },
 });
