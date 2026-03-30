@@ -166,4 +166,11 @@ export default defineSchema({
       "type",
       "portfolioId",
     ]),
+
+  appFeedback: defineTable({
+    authorId: v.id("users"),
+    feedback: v.string(),
+    status: v.union(v.literal("pending"), v.literal("reviewed"), v.literal("archived")),
+    createdAt: v.number(),
+  }).index("by_authorId", ["authorId"]),
 });

@@ -10,6 +10,7 @@ import { ChevronDown } from "lucide-react";
 import { FeedCard, FeedCardSkeleton } from "@/components/feed/FeedCard";
 import type { FeedCardData } from "@/components/feed/FeedCard";
 import { PortfolioPreviewModal } from "@/components/feed/PortfolioPreviewModal";
+import { FeedbackModal } from "@/components/FeedbackModal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -241,6 +242,7 @@ export default function FeedPage() {
   const [previewPortfolio, setPreviewPortfolio] = useState<FeedCardData | null>(
     null,
   );
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
 
   const { results, status, loadMore } = usePaginatedQuery(
     api.portfolios.queries.list,
@@ -282,6 +284,7 @@ export default function FeedPage() {
           <Button
             variant="ghost"
             size="lg"
+            onClick={() => setFeedbackModalOpen(true)}
             className="text-white/70 border border-white/10 hover:bg-white/5 hover:text-white hover:border-white/20 transition-all duration-300 rounded-lg px-6"
           >
             Contribuir feedback
@@ -521,6 +524,14 @@ export default function FeedPage() {
       <PortfolioPreviewModal
         portfolio={previewPortfolio}
         onClose={() => setPreviewPortfolio(null)}
+      />
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Feedback Modal                                                       */}
+      {/* ------------------------------------------------------------------ */}
+      <FeedbackModal
+        open={feedbackModalOpen}
+        onOpenChange={setFeedbackModalOpen}
       />
     </div>
   );
