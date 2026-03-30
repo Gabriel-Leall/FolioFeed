@@ -126,3 +126,14 @@ export const deleteSeed = internalMutation({
     return null;
   },
 });
+
+export const hardDeleteSeed = internalMutation({
+  args: {
+    portfolioId: v.id("portfolios"),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    await ctx.db.delete(args.portfolioId);
+    return null;
+  },
+});
