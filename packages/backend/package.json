@@ -9,7 +9,7 @@
     "dev:setup": "convex dev --configure --until-success"
   },
   "dependencies": {
-    "convex": "^1.34.0",
+    "convex": "^1.34.1",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },
