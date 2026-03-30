@@ -1,4 +1,4 @@
-import { BookOpen, MessageSquare } from "lucide-react";
+import { BookOpen, MessageSquare, Inbox } from "lucide-react";
 
 import { cn } from "@PeerFolio/ui/lib/utils";
 
@@ -9,6 +9,7 @@ type UserProfileTabsProps = {
   onTabChange: (tab: UserProfileTab) => void;
   portfoliosCount: number;
   critiquesCount: number;
+  receivedCount?: number;
 };
 
 export function UserProfileTabs({
@@ -16,6 +17,7 @@ export function UserProfileTabs({
   onTabChange,
   portfoliosCount,
   critiquesCount,
+  receivedCount = 0,
 }: UserProfileTabsProps) {
   return (
     <div className="flex gap-6 px-1">
@@ -55,6 +57,26 @@ export function UserProfileTabs({
           {critiquesCount}
         </span>
         {activeTab === "critiques" ? (
+          <span className="absolute -bottom-0.5 left-3 right-3 h-0.5 rounded-full bg-primary" />
+        ) : null}
+      </button>
+
+      <button
+        type="button"
+        onClick={() => onTabChange("received")}
+        className={cn(
+          "relative inline-flex flex-1 items-center justify-center gap-2 px-3 py-2 text-sm transition-colors",
+          activeTab === "received"
+            ? "text-primary"
+            : "text-on-surface-variant hover:text-on-surface"
+        )}
+      >
+        <Inbox className="h-4 w-4" />
+        Recebidas
+        <span className="rounded-full bg-surface-container-low px-2 py-0.5 text-xs text-on-surface-variant">
+          {receivedCount}
+        </span>
+        {activeTab === "received" ? (
           <span className="absolute -bottom-0.5 left-3 right-3 h-0.5 rounded-full bg-primary" />
         ) : null}
       </button>

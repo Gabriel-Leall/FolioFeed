@@ -31,6 +31,7 @@ export default function ProfilePage() {
   });
 
   const meQuery = useQuery(api.users.queries.getMe);
+  const receivedCritiques = useQuery(api.users.queries.getReceivedCritiques);
   const upsertProfile = useMutation(api.users.mutations.upsertProfile);
 
   const isLoading = profile === undefined;
@@ -119,12 +120,14 @@ export default function ProfilePage() {
             onTabChange={setActiveTab}
             portfoliosCount={profile.portfolios.length}
             critiquesCount={profile.critiquesGiven.length}
+            receivedCount={receivedCritiques?.length ?? 0}
           />
 
           <UserProfileContentRail
             activeTab={activeTab}
             portfolios={profile.portfolios}
             critiques={profile.critiquesGiven}
+            receivedCritiques={receivedCritiques}
             isOwner={isOwner}
           />
         </div>

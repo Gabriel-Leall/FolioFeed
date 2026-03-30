@@ -1,4 +1,4 @@
-export type UserProfileTab = "portfolios" | "critiques";
+export type UserProfileTab = "portfolios" | "critiques" | "received";
 
 export type UserProfileSocialLinks = {
   github?: string;
@@ -29,4 +29,23 @@ export type UserProfileCritique = {
   createdAt: number;
   portfolioTitle: string | null;
   portfolioArea: string | null;
+};
+
+export type UserProfileReceivedCritique = {
+  _id: string;
+  portfolioId: string;
+  rating: number;
+  feedback: string;
+  upvotes: number;
+  createdAt: number;
+  portfolio: {
+    _id: string;
+    title: string;
+    url: string;
+  };
+  author: {
+    _id: string;
+    nickname: string | undefined;
+    avatarUrl: string | undefined;
+  };
 };

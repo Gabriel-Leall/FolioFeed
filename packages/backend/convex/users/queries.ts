@@ -195,3 +195,87 @@ export const getUnreadNotifications = query({
     }));
   },
 });
+
+// ---------------------------------------------------------------------------
+// users.getReceivedCritiques — Get all critiques received on user's portfolios
+// ---------------------------------------------------------------------------
+
+export const getReceivedCritiques = query({
+  args: {},
+  returns: v.array(
+    v.object({
+      _id: v.id("critiques"),
+      portfolioId: v.id("portfolios"),
+      rating: v.number(),
+      feedback: v.string(),
+      upvotes: v.number(),
+      createdAt: v.number(),
+      portfolio: v.object({
+        _id: v.id("portfolios"),
+        title: v.string(),
+        url: v.string(),
+      }),
+      author: v.object({
+        _id: v.id("users"),
+        nickname: v.optional(v.string()),
+        avatarUrl: v.optional(v.string()),
+      }),
+    })
+  ),
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return [];
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .unique();
+
+    if (!user) {
+      return [];
+    }
+
+    const userPortfolios = await ctx.db
+      .query("portfolios")
+      .withIndex("by_authorId", (q) => q.eq("authorId", user._id))
+      .collect();
+
+    const portfolioIds = new Set(userPortfolios.map((p) => p._id));
+
+    const allCritiques = await ctx.db
+      .query("critiques")
+      .order("desc")
+      .collect();
+
+    const receivedCritiques = allCritiques.filter((c) =>
+      portfolioIds.has(c.portfolioId)
+    );
+
+    return Promise.all(
+      receivedCritiques.map(async (critique) => {
+        const portfolio = await ctx.db.get(critique.portfolioId);
+        const author = await ctx.db.get(critique.authorId);
+        return {
+          _id: critique._id,
+          portfolioId: critique.portfolioId,
+          rating: critique.rating,
+          feedback: critique.feedback,
+          upvotes: critique.upvotes,
+          createdAt: critique.createdAt,
+          portfolio: portfolio
+            ? { _id: portfolio._id, title: portfolio.title, url: portfolio.url }
+            : { _id: critique.portfolioId, title: "Unknown", url: "" },
+          author: author
+            ? {
+                _id: author._id,
+                nickname: author.nickname,
+                avatarUrl: author.avatarUrl,
+              }
+            : { _id: critique.authorId, nickname: undefined, avatarUrl: undefined },
+        };
+      })
+    );
+  },
+});
