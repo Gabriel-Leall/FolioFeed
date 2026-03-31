@@ -76,7 +76,11 @@ export default function Header() {
   const pathname = usePathname();
   const isLandingPage = pathname === "/";
 
-  const landingLinks = [{ to: "#portfolios", label: "Comunidade" }] as const;
+  const landingLinks = [
+    { to: "#portfolios", label: "Destaques" },
+    { to: "#features", label: "Recursos" },
+    { to: "#cta", label: "Começar" },
+  ] as const;
 
   const appLinks: { to: string; label: string }[] = [];
 
