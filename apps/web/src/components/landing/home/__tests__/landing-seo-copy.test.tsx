@@ -53,6 +53,9 @@ beforeEach(() => {
   });
 });
 
+const fallbackImage =
+  "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop";
+
 describe("landing contract", () => {
   it("defines strong home metadata", () => {
     const expectedTitle = "Comunidade curada para portfolios criativos";
@@ -136,5 +139,48 @@ describe("landing contract", () => {
     expect(status).not.toBeNull();
     expect(status).toHaveAttribute("aria-live", "polite");
     expect(status).toHaveTextContent(/Ainda nao ha portfolios em destaque/i);
+  });
+
+  it("falls back to safe image for disallowed preview host", () => {
+    mockUsePaginatedQuery.mockReturnValue({
+      status: "CanLoadMore",
+      results: [
+        {
+          _id: "portfolio-1",
+          title: "Portfolio seguro",
+          area: "Ilustracao",
+          previewImageUrl: "https://evil.example.com/malicious.jpg",
+          author: { nickname: "Artista" },
+        },
+      ],
+    });
+
+    render(<CulturalSpotlight />);
+
+    const image = screen.getByRole("img", { name: "Portfolio seguro" });
+    expect(image).toHaveAttribute("src", fallbackImage);
+  });
+
+  it("keeps allowed preview host image", () => {
+    const allowedUrl =
+      "https://images.unsplash.com/photo-1459908676235-d5f02a50184b?q=80&w=1200&auto=format&fit=crop";
+
+    mockUsePaginatedQuery.mockReturnValue({
+      status: "CanLoadMore",
+      results: [
+        {
+          _id: "portfolio-2",
+          title: "Portfolio permitido",
+          area: "Fotografia",
+          previewImageUrl: allowedUrl,
+          author: { nickname: "Fotografo" },
+        },
+      ],
+    });
+
+    render(<CulturalSpotlight />);
+
+    const image = screen.getByRole("img", { name: "Portfolio permitido" });
+    expect(image).toHaveAttribute("src", allowedUrl);
   });
 });

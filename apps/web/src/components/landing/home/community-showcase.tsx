@@ -6,6 +6,30 @@ import { usePaginatedQuery } from "convex/react";
 
 import { api } from "@PeerFolio/backend/convex/_generated/api";
 
+const FALLBACK_IMAGE_URL =
+  "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop";
+const ALLOWED_IMAGE_HOSTS = new Set(["images.unsplash.com"]);
+
+function getSafeImageUrl(url: string | null | undefined) {
+  if (!url) {
+    return FALLBACK_IMAGE_URL;
+  }
+
+  try {
+    const parsedUrl = new URL(url);
+    if (
+      parsedUrl.protocol !== "https:" ||
+      !ALLOWED_IMAGE_HOSTS.has(parsedUrl.hostname.toLowerCase())
+    ) {
+      return FALLBACK_IMAGE_URL;
+    }
+
+    return parsedUrl.toString();
+  } catch {
+    return FALLBACK_IMAGE_URL;
+  }
+}
+
 export function CommunityShowcase() {
   const { results, status } = usePaginatedQuery(
     api.portfolios.queries.list,
@@ -15,9 +39,6 @@ export function CommunityShowcase() {
 
   const isLoading = status === "LoadingFirstPage";
   const isEmpty = !isLoading && results.length === 0;
-  const fallbackImage =
-    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop";
-
   return (
     <section
       className="mx-auto w-full max-w-7xl px-6 py-24 md:py-32"
@@ -81,7 +102,7 @@ export function CommunityShowcase() {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   quality={72}
                   loading="lazy"
-                  src={portfolio.previewImageUrl || fallbackImage}
+                  src={getSafeImageUrl(portfolio.previewImageUrl)}
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-background/80 via-background/20 to-transparent" />
               </div>
