@@ -3,6 +3,7 @@ import type { AnchorHTMLAttributes, ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { metadata } from "@/app/page";
+import { CulturalSpotlight } from "@/components/landing/cultural-spotlight";
 import { LandingHero } from "../landing-hero";
 
 type LinkMockProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
@@ -16,6 +17,23 @@ vi.mock("next/link", () => ({
       {children}
     </a>
   ),
+}));
+
+vi.mock("convex/react", () => ({
+  usePaginatedQuery: () => ({
+    results: [],
+    status: "CanLoadMore",
+  }),
+}));
+
+vi.mock("@PeerFolio/backend/convex/_generated/api", () => ({
+  api: {
+    portfolios: {
+      queries: {
+        list: "mocked-query",
+      },
+    },
+  },
 }));
 
 afterEach(() => {
@@ -67,5 +85,13 @@ describe("landing contract", () => {
     expect(ctaLinks[0]).toHaveAttribute("href", "/feed");
     expect(ctaLinks[1]).toHaveAccessibleName("Publicar meu portfolio");
     expect(ctaLinks[1]).toHaveAttribute("href", "/submit");
+  });
+
+  it("renders community showcase heading copy contract", () => {
+    render(<CulturalSpotlight />);
+
+    expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(
+      /Vitrine da comunidade/i,
+    );
   });
 });

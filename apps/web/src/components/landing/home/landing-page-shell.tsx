@@ -1,4 +1,4 @@
-import { CulturalSpotlight } from "@/components/landing/cultural-spotlight";
+import { CommunityShowcase } from "./community-showcase";
 
 import { CtaSection } from "./cta-section";
 import { FeaturesSection } from "./features-section";
@@ -11,7 +11,7 @@ export function LandingPageShell() {
       <LandingHero />
 
       <div id="portfolios" className="bg-muted/20">
-        <CulturalSpotlight />
+        <CommunityShowcase />
       </div>
 
       <FeaturesSection />
