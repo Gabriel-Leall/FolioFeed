@@ -3,15 +3,14 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   css: {
-    postcss: {
-      plugins: [],
-    },
+    postcss: {},
   },
   test: {
     css: false,
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
     include: ["src/**/*.test.{ts,tsx}"],
+    restoreMocks: true,
   },
   resolve: {
     alias: {
