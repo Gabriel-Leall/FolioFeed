@@ -24,11 +24,31 @@ afterEach(() => {
 
 describe("landing contract", () => {
   it("defines strong home metadata", () => {
-    expect(metadata.title).toBeTruthy();
-    expect(String(metadata.description)).toContain("comunidade");
+    const expectedTitle = "Comunidade curada para portfolios criativos";
+    const expectedDescription =
+      "Descubra portfolios criativos em uma comunidade curada e publique seu trabalho para ganhar reconhecimento.";
+    const expectedOgDescription =
+      "Vitrine editorial de portfolios criativos com foco em descoberta e reconhecimento.";
+    const expectedTwitterDescription =
+      "Explore artistas e publique seu portfolio em uma vitrine curada.";
+
+    expect(metadata.title).toBe(expectedTitle);
+    expect(String(metadata.title)).not.toMatch(/PeerFolio\s*\|\s*PeerFolio/i);
+    expect(metadata.description).toBe(expectedDescription);
     expect(metadata.alternates?.canonical).toBe("/");
-    expect(metadata.openGraph?.title).toBeTruthy();
-    expect(metadata.twitter?.card).toBe("summary_large_image");
+    expect(metadata.openGraph?.title).toBe(expectedTitle);
+    expect(metadata.openGraph?.description).toBe(expectedOgDescription);
+    expect(metadata.openGraph?.url).toBe("/");
+
+    const twitter = metadata.twitter;
+    if (!twitter || typeof twitter === "string") {
+      throw new Error("Expected structured twitter metadata");
+    }
+
+    const twitterRecord = twitter as Record<string, unknown>;
+    expect(twitterRecord.card).toBe("summary_large_image");
+    expect(twitterRecord.title).toBe(expectedTitle);
+    expect(twitterRecord.description).toBe(expectedTwitterDescription);
   });
 
   it("exposes expected hero heading and ctas", () => {
