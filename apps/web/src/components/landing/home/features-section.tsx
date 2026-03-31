@@ -15,7 +15,7 @@ const features = [
   },
   {
     icon: <Lightbulb className="h-6 w-6" />,
-    title: "Descoberta com olhar curado",
+    title: "Descoberta com curadoria especializada",
     description:
       "Explore galerias organizadas por estilo, processo e contexto para encontrar referencias que realmente inspiram novas direcoes.",
   },

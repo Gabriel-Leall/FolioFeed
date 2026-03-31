@@ -3,13 +3,17 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-import { Button } from "@PeerFolio/ui/components/button";
+import { buttonVariants } from "@PeerFolio/ui/components/button";
+import { cn } from "@PeerFolio/ui/lib/utils";
 
 import { Reveal } from "./reveal";
 
 export function CtaSection() {
   return (
-    <section className="relative overflow-hidden bg-background py-24 md:py-32">
+    <section
+      className="relative overflow-hidden bg-background py-24 md:py-32"
+      aria-labelledby="cta-section-title"
+    >
       <div
         className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-125 w-175 rounded-full opacity-15 blur-3xl"
         style={{
@@ -21,7 +25,10 @@ export function CtaSection() {
 
       <div className="container relative z-10 mx-auto max-w-3xl px-6 text-center">
         <Reveal>
-          <h2 className="mb-6 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
+          <h2
+            id="cta-section-title"
+            className="mb-6 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl"
+          >
             Seu portfolio merece contexto editorial e alcance real.
           </h2>
           <p className="mb-10 text-lg text-muted-foreground">
@@ -30,23 +37,24 @@ export function CtaSection() {
             reconhecimento.
           </p>
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link href="/feed">
-              <Button
-                size="lg"
-                className="pf-home-glow-pulse h-12 cursor-pointer bg-primary text-white transition-all duration-200 hover:scale-105 hover:bg-secondary"
-              >
-                Explorar artistas
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+            <Link
+              href="/feed"
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "pf-home-glow-pulse h-12 bg-primary text-white transition-all duration-200 hover:scale-105 hover:bg-secondary",
+              )}
+            >
+              Explorar artistas
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
-            <Link href="/submit">
-              <Button
-                size="lg"
-                variant="outline"
-                className="h-12 cursor-pointer border-border/60 bg-surface-container/60 text-foreground transition-all duration-200 hover:scale-105 hover:bg-surface-container"
-              >
-                Publicar meu portfolio
-              </Button>
+            <Link
+              href="/submit"
+              className={cn(
+                buttonVariants({ size: "lg", variant: "outline" }),
+                "h-12 border-border/60 bg-surface-container/60 text-foreground transition-all duration-200 hover:scale-105 hover:bg-surface-container",
+              )}
+            >
+              Publicar meu portfolio
             </Link>
           </div>
         </Reveal>

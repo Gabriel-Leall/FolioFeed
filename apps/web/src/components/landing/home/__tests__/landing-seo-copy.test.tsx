@@ -81,6 +81,11 @@ beforeEach(() => {
 const fallbackImage =
   "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop";
 
+const ctaContracts = [
+  { name: "Explorar artistas", href: "/feed" },
+  { name: "Publicar meu portfolio", href: "/submit" },
+];
+
 describe("landing contract", () => {
   it("defines strong home metadata", () => {
     const expectedTitle = "Comunidade curada para portfolios criativos";
@@ -120,12 +125,11 @@ describe("landing contract", () => {
 
     expect(screen.getByRole("region", { name: h1.textContent ?? "" })).toBeInTheDocument();
 
-    const ctaLinks = screen.getAllByRole("link");
-    expect(ctaLinks).toHaveLength(2);
-    expect(ctaLinks[0]).toHaveAccessibleName("Explorar artistas");
-    expect(ctaLinks[0]).toHaveAttribute("href", "/feed");
-    expect(ctaLinks[1]).toHaveAccessibleName("Publicar meu portfolio");
-    expect(ctaLinks[1]).toHaveAttribute("href", "/submit");
+    expect(screen.getAllByRole("link")).toHaveLength(ctaContracts.length);
+
+    ctaContracts.forEach(({ name, href }) => {
+      expect(screen.getByRole("link", { name })).toHaveAttribute("href", href);
+    });
   });
 
   it("renders community showcase heading copy contract", () => {
@@ -144,7 +148,7 @@ describe("landing contract", () => {
     const cardHeadings = screen.getAllByRole("heading", { level: 3 });
     expect(cardHeadings).toHaveLength(3);
     expect(cardHeadings[0]).toHaveTextContent(/curadoria editorial/i);
-    expect(cardHeadings[1]).toHaveTextContent(/olhar curado/i);
+    expect(cardHeadings[1]).toHaveTextContent(/curadoria especializada/i);
     expect(cardHeadings[2]).toHaveTextContent(/reconhecimento que circula/i);
   });
 
@@ -155,12 +159,11 @@ describe("landing contract", () => {
       /Seu portfolio merece contexto editorial e alcance real\./i,
     );
 
-    const ctaLinks = screen.getAllByRole("link");
-    expect(ctaLinks).toHaveLength(2);
-    expect(ctaLinks[0]).toHaveAccessibleName("Explorar artistas");
-    expect(ctaLinks[0]).toHaveAttribute("href", "/feed");
-    expect(ctaLinks[1]).toHaveAccessibleName("Publicar meu portfolio");
-    expect(ctaLinks[1]).toHaveAttribute("href", "/submit");
+    expect(screen.getAllByRole("link")).toHaveLength(ctaContracts.length);
+
+    ctaContracts.forEach(({ name, href }) => {
+      expect(screen.getByRole("link", { name })).toHaveAttribute("href", href);
+    });
   });
 
   it("announces loading state for screen readers", () => {
