@@ -76,9 +76,27 @@ export const getById = query({
       }
     }
 
-    return {
-      ...portfolio,
+  return {
+      _id: portfolio._id,
+      title: portfolio.title,
+      url: portfolio.url,
+      normalizedUrl: portfolio.normalizedUrl,
       area: portfolio.area as string,
+      stack: portfolio.stack,
+      goalsContext: portfolio.goalsContext,
+      previewImageUrl: portfolio.previewImageUrl,
+      previewStatus: portfolio.previewStatus,
+      previewAttemptCount: portfolio.previewAttemptCount,
+      previewRefreshRequestedAt: portfolio.previewRefreshRequestedAt,
+      averageRating: portfolio.averageRating,
+      critiqueCount: portfolio.critiqueCount,
+      likeCount: portfolio.likeCount,
+      topRatedScore: portfolio.topRatedScore,
+      lastCritiqueAt: portfolio.lastCritiqueAt,
+      isDeleted: portfolio.isDeleted,
+      createdAt: portfolio.createdAt,
+      urlStatus: portfolio.urlStatus,
+      consecutiveOfflineCount: portfolio.consecutiveOfflineCount,
       hasLiked,
       author: {
         _id: portfolio.authorId,
