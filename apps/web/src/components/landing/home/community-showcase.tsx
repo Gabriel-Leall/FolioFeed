@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePaginatedQuery } from "convex/react";
 
 import { api } from "@PeerFolio/backend/convex/_generated/api";
@@ -14,6 +15,8 @@ export function CommunityShowcase() {
 
   const isLoading = status === "LoadingFirstPage";
   const isEmpty = !isLoading && results.length === 0;
+  const fallbackImage =
+    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop";
 
   return (
     <section
@@ -35,7 +38,7 @@ export function CommunityShowcase() {
 
         <Link
           href="/feed"
-          className="inline-flex items-center gap-2 rounded-md border border-border/60 bg-surface-container/70 px-4 py-2 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-on-surface transition-colors hover:bg-surface-container-high"
+          className="inline-flex items-center gap-2 rounded-md border border-border/60 bg-surface-container/70 px-4 py-2 font-sans text-xs font-semibold uppercase tracking-[0.16em] text-on-surface transition-colors hover:bg-surface-container-high focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           Ver acervo
           <span className="material-symbols-outlined text-sm" aria-hidden="true">
@@ -45,11 +48,21 @@ export function CommunityShowcase() {
       </div>
 
       {isLoading ? (
-        <div className="glass-panel rounded-lg border border-border/50 px-6 py-14 text-center font-sans text-sm uppercase tracking-[0.18em] text-on-surface-variant">
+        <div
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          className="glass-panel rounded-lg border border-border/50 px-6 py-14 text-center font-sans text-sm uppercase tracking-[0.18em] text-on-surface-variant"
+        >
           Carregando vitrine...
         </div>
       ) : isEmpty ? (
-        <div className="glass-panel rounded-lg border border-border/50 px-6 py-14 text-center font-sans text-sm uppercase tracking-[0.18em] text-on-surface-variant">
+        <div
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          className="glass-panel rounded-lg border border-border/50 px-6 py-14 text-center font-sans text-sm uppercase tracking-[0.18em] text-on-surface-variant"
+        >
           Ainda nao ha portfolios em destaque.
         </div>
       ) : (
@@ -57,17 +70,18 @@ export function CommunityShowcase() {
           {results.map((portfolio) => (
             <Link
               key={portfolio._id}
-              href={`/portfolio/${portfolio._id}` as any}
-              className="group glass-panel overflow-hidden rounded-lg border border-border/60 bg-surface-container/70 transition-all duration-300 hover:-translate-y-1 hover:border-primary/45 hover:bg-surface-container-high"
+              href={`/portfolio/${portfolio._id}`}
+              className="group glass-panel overflow-hidden rounded-lg border border-border/60 bg-surface-container/70 transition-all duration-300 hover:-translate-y-1 hover:border-primary/45 hover:bg-surface-container-high focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-surface-container-highest">
-                <img
+                <Image
                   alt={portfolio.title}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  src={
-                    portfolio.previewImageUrl ||
-                    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop"
-                  }
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  quality={72}
+                  loading="lazy"
+                  src={portfolio.previewImageUrl || fallbackImage}
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-background/80 via-background/20 to-transparent" />
               </div>

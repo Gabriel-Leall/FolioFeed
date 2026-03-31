@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import type { AnchorHTMLAttributes, ReactNode } from "react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { metadata } from "@/app/page";
 import { CulturalSpotlight } from "@/components/landing/cultural-spotlight";
@@ -19,11 +19,16 @@ vi.mock("next/link", () => ({
   ),
 }));
 
+vi.mock("next/image", () => ({
+  default: ({ alt, src, ...props }: { alt: string; src: string }) =>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img alt={alt} src={src} {...props} />,
+}));
+
+const mockUsePaginatedQuery = vi.fn();
+
 vi.mock("convex/react", () => ({
-  usePaginatedQuery: () => ({
-    results: [],
-    status: "CanLoadMore",
-  }),
+  usePaginatedQuery: (...args: unknown[]) => mockUsePaginatedQuery(...args),
 }));
 
 vi.mock("@PeerFolio/backend/convex/_generated/api", () => ({
@@ -37,7 +42,15 @@ vi.mock("@PeerFolio/backend/convex/_generated/api", () => ({
 }));
 
 afterEach(() => {
-  vi.restoreAllMocks();
+  cleanup();
+  vi.clearAllMocks();
+});
+
+beforeEach(() => {
+  mockUsePaginatedQuery.mockReturnValue({
+    results: [],
+    status: "CanLoadMore",
+  });
 });
 
 describe("landing contract", () => {
@@ -93,5 +106,35 @@ describe("landing contract", () => {
     expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(
       /Vitrine da comunidade/i,
     );
+  });
+
+  it("announces loading state for screen readers", () => {
+    mockUsePaginatedQuery.mockReturnValue({
+      results: [],
+      status: "LoadingFirstPage",
+    });
+
+    render(<CulturalSpotlight />);
+
+    const status = screen.getByText(/Carregando vitrine/i).closest('[role="status"]');
+    expect(status).not.toBeNull();
+    expect(status).toHaveAttribute("aria-live", "polite");
+    expect(status).toHaveTextContent(/Carregando vitrine/i);
+  });
+
+  it("announces empty state for screen readers", () => {
+    mockUsePaginatedQuery.mockReturnValue({
+      results: [],
+      status: "CanLoadMore",
+    });
+
+    render(<CulturalSpotlight />);
+
+    const status = screen
+      .getByText(/Ainda nao ha portfolios em destaque/i)
+      .closest('[role="status"]');
+    expect(status).not.toBeNull();
+    expect(status).toHaveAttribute("aria-live", "polite");
+    expect(status).toHaveTextContent(/Ainda nao ha portfolios em destaque/i);
   });
 });
