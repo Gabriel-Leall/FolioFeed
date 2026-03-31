@@ -51,23 +51,25 @@ describe("landing contract", () => {
     expect(twitterRecord.description).toBe(expectedTwitterDescription);
   });
 
-  it("exposes expected hero heading and ctas", () => {
+  it("renders editorial hero with dual CTA contract", () => {
     vi
       .spyOn(HTMLCanvasElement.prototype, "getContext")
       .mockReturnValue(null);
 
     render(<LandingHero />);
 
-    expect(
-      screen.getByRole("heading", { name: /A Galeria Digital para/i }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Apply for Membership" })).toHaveAttribute(
-      "href",
-      "/sign-up",
+    const h1 = screen.getAllByRole("heading", { level: 1 });
+    expect(h1).toHaveLength(1);
+    expect(h1[0]).toHaveTextContent(
+      /Onde artistas digitais transformam portfolio em reconhecimento\./i,
     );
-    expect(screen.getByRole("link", { name: "Explorar Arquivo" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /explorar artistas/i })).toHaveAttribute(
       "href",
       "/feed",
+    );
+    expect(screen.getByRole("link", { name: /publicar meu portfolio/i })).toHaveAttribute(
+      "href",
+      "/submit",
     );
   });
 });
