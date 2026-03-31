@@ -24,8 +24,11 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "PeerFolio",
-  description: "PeerFolio",
+  title: {
+    default: "PeerFolio",
+    template: "%s | PeerFolio",
+  },
+  description: "Comunidade para compartilhar portfolios e evoluir com feedback.",
 };
 
 export default function RootLayout({

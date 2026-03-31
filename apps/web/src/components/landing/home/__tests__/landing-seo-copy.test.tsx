@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import type { AnchorHTMLAttributes, ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { metadata } from "@/app/page";
 import { LandingHero } from "../landing-hero";
 
 type LinkMockProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
@@ -22,6 +23,14 @@ afterEach(() => {
 });
 
 describe("landing contract", () => {
+  it("defines strong home metadata", () => {
+    expect(metadata.title).toBeTruthy();
+    expect(String(metadata.description)).toContain("comunidade");
+    expect(metadata.alternates?.canonical).toBe("/");
+    expect(metadata.openGraph?.title).toBeTruthy();
+    expect(metadata.twitter?.card).toBe("summary_large_image");
+  });
+
   it("exposes expected hero heading and ctas", () => {
     vi
       .spyOn(HTMLCanvasElement.prototype, "getContext")
