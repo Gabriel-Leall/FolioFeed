@@ -39,7 +39,7 @@ export default function Home() {
                 <li>
                   <Link
                     href="/feed"
-                    className="text-muted-foreground transition-colors duration-200 hover:text-primary"
+                    className="text-muted-foreground transition-colors duration-150 ease-out hover:text-primary"
                   >
                     Explorar
                   </Link>
@@ -47,7 +47,7 @@ export default function Home() {
                 <li>
                   <Link
                     href="/submit"
-                    className="text-muted-foreground transition-colors duration-200 hover:text-primary"
+                    className="text-muted-foreground transition-colors duration-150 ease-out hover:text-primary"
                   >
                     Submeter
                   </Link>
@@ -63,7 +63,7 @@ export default function Home() {
                 <li>
                   <Link
                     href="/dashboard"
-                    className="text-muted-foreground transition-colors duration-200 hover:text-primary"
+                    className="text-muted-foreground transition-colors duration-150 ease-out hover:text-primary"
                   >
                     Dashboard
                   </Link>
@@ -79,7 +79,7 @@ export default function Home() {
                 <li>
                   <Link
                     href={"/privacy" as any}
-                    className="text-muted-foreground transition-colors duration-200 hover:text-primary"
+                    className="text-muted-foreground transition-colors duration-150 ease-out hover:text-primary"
                   >
                     Privacidade
                   </Link>
@@ -87,7 +87,7 @@ export default function Home() {
                 <li>
                   <Link
                     href={"/terms" as any}
-                    className="text-muted-foreground transition-colors duration-200 hover:text-primary"
+                    className="text-muted-foreground transition-colors duration-150 ease-out hover:text-primary"
                   >
                     Termos
                   </Link>

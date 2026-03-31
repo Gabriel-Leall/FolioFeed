@@ -37,7 +37,7 @@ export function UserProfileTabs({
           {portfoliosCount}
         </span>
         {activeTab === "portfolios" ? (
-          <span className="absolute -bottom-0.5 left-3 right-3 h-0.5 rounded-full bg-primary" />
+          <span className="absolute -bottom-0.5 left-3 right-3 h-0.5 rounded-full bg-primary transition-transform duration-200 ease-out" />
         ) : null}
       </button>
 
@@ -57,7 +57,7 @@ export function UserProfileTabs({
           {critiquesCount}
         </span>
         {activeTab === "critiques" ? (
-          <span className="absolute -bottom-0.5 left-3 right-3 h-0.5 rounded-full bg-primary" />
+          <span className="absolute -bottom-0.5 left-3 right-3 h-0.5 rounded-full bg-primary transition-transform duration-200 ease-out" />
         ) : null}
       </button>
 
@@ -77,7 +77,7 @@ export function UserProfileTabs({
           {receivedCount}
         </span>
         {activeTab === "received" ? (
-          <span className="absolute -bottom-0.5 left-3 right-3 h-0.5 rounded-full bg-primary" />
+          <span className="absolute -bottom-0.5 left-3 right-3 h-0.5 rounded-full bg-primary transition-transform duration-200 ease-out" />
         ) : null}
       </button>
     </div>

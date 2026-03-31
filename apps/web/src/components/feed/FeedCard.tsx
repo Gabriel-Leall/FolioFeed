@@ -164,7 +164,7 @@ export function FeedCard({ portfolio, onOpenModal }: FeedCardProps) {
   return (
     <>
       <article
-        className="group relative flex flex-col gap-4 cursor-pointer"
+        className="group relative flex flex-col gap-4 cursor-pointer transition-transform duration-150 active:scale-[0.98]"
         onClick={handleCardClick}
         role="button"
         tabIndex={0}
@@ -182,7 +182,7 @@ export function FeedCard({ portfolio, onOpenModal }: FeedCardProps) {
             <img
               src={portfolio.previewImageUrl}
               alt={`Preview do portfólio ${portfolio.title}`}
-              className="h-full w-full object-cover transition-transform duration-700 ease-out opacity-80 group-hover:scale-105 group-hover:opacity-100"
+              className="h-full w-full object-cover transition-transform duration-200 ease-out opacity-80 group-hover:scale-105 group-hover:opacity-100"
               loading="lazy"
             />
           ) : (
@@ -208,11 +208,11 @@ export function FeedCard({ portfolio, onOpenModal }: FeedCardProps) {
                   onClick={handleFavorite}
                   disabled={isFavoriting}
                   aria-label={localHasFavorited ? "Remover favorito" : "Adicionar aos favoritos"}
-                  className="group p-2 rounded-md bg-background/90 backdrop-blur-sm hover:bg-white/20 transition-colors cursor-pointer"
+                  className="group p-2 rounded-md bg-background/90 backdrop-blur-sm hover:bg-white/20 transition-all duration-150 ease-out cursor-pointer active:scale-95"
                 >
                   <Bookmark
-                    className={cn(
-                      "h-4 w-4 transition-all duration-200",
+className={cn(
+                      "h-4 w-4 transition-all duration-150 ease-out",
                       localHasFavorited
                         ? "fill-primary text-primary"
                         : "text-muted-foreground group-hover:text-primary hover:scale-110"
@@ -224,7 +224,7 @@ export function FeedCard({ portfolio, onOpenModal }: FeedCardProps) {
           </div>
 
           {/* Hover Overlay CTA */}
-          <div className="pointer-events-none absolute inset-0 z-10 bg-linear-to-t from-background/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 flex items-end p-5 group-hover:opacity-100">
+          <div className="pointer-events-none absolute inset-0 z-10 bg-linear-to-t from-background/80 via-transparent to-transparent opacity-0 transition-opacity duration-200 ease-out flex items-end p-5 group-hover:opacity-100">
             <span
               className="w-full py-2.5 rounded-md bg-primary/20 backdrop-blur-md border border-primary/20 text-primary font-medium text-sm text-center"
               aria-hidden
@@ -238,7 +238,7 @@ export function FeedCard({ portfolio, onOpenModal }: FeedCardProps) {
         <div className="flex items-start justify-between">
           {/* Title + Author */}
           <div className="min-w-0 flex-1 pr-3">
-            <h3 className="font-serif text-xl text-foreground group-hover:text-primary transition-colors duration-200 leading-snug">
+            <h3 className="font-serif text-xl text-foreground group-hover:text-primary transition-colors duration-150 leading-snug">
               <TruncatedText text={portfolio.title} maxLength={50} />
             </h3>
             <p className="font-sans mt-1 text-xs text-muted-foreground truncate flex items-center gap-1.5">

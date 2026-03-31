@@ -166,7 +166,7 @@ export function LandingHero() {
             <Button
               variant="outline"
               size="lg"
-              className="h-12 rounded-full border border-white/10 bg-[#131313]/85 px-7 text-sm font-medium text-white transition-all duration-300 hover:border-primary/60 hover:bg-[#1b1b1f] hover:text-[#e9dcff]"
+              className="h-12 rounded-full border border-white/10 bg-[#131313]/85 px-7 text-sm font-medium text-white transition-all duration-150 ease-out hover:border-primary/60 hover:bg-[#1b1b1f] hover:text-[#e9dcff] active:scale-[0.97]"
             >
               Explorar Arquivo
             </Button>
