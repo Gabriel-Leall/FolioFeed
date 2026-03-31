@@ -9,21 +9,21 @@ import { Reveal } from "./reveal";
 const features = [
   {
     icon: <MessageSquare className="h-6 w-6" />,
-    title: "Obtenha Criticas Construtivas",
+    title: "Curadoria editorial de portfolios",
     description:
-      "Receba feedback genuino de outros desenvolvedores que querem ajudar voce a melhorar.",
+      "Destaques selecionados para facilitar a descoberta de trabalhos autorais com qualidade visual e narrativa clara.",
   },
   {
     icon: <Lightbulb className="h-6 w-6" />,
-    title: "Descubra Inspiracao",
+    title: "Descoberta com olhar curado",
     description:
-      "Explore portfolios de devs talentosos e encontre novas ideias para seus proprios projetos.",
+      "Explore galerias organizadas por estilo, processo e contexto para encontrar referencias que realmente inspiram novas direcoes.",
   },
   {
     icon: <Users className="h-6 w-6" />,
-    title: "Cresca Junto",
+    title: "Reconhecimento que circula na comunidade",
     description:
-      "Faca parte de uma comunidade engajada focada em crescimento mutuo e aprendizado continuo.",
+      "Publique seu portfolio em uma vitrine curada para ampliar alcance, fortalecer reputacao e gerar novas oportunidades criativas.",
   },
 ];
 
@@ -71,12 +71,12 @@ export function FeaturesSection() {
         <Reveal>
           <div className="mb-14 text-center">
             <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
-              Por que escolher o <span className="text-primary">PeerFolio</span>
-              ?
+              Por que PeerFolio
             </h2>
             <p className="mx-auto max-w-2xl text-muted-foreground">
-              Uma plataforma construida para desenvolvedores que buscam crescer
-              atraves de feedback genuino e colaboracao.
+              Uma plataforma editorial para descobrir portfolios criativos,
+              publicar trabalhos autorais e transformar visibilidade em
+              reconhecimento.
             </p>
           </div>
         </Reveal>

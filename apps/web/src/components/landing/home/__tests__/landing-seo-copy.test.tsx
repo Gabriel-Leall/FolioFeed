@@ -1,9 +1,20 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import type { AnchorHTMLAttributes, ReactNode } from "react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 import { metadata } from "@/app/page";
 import { CulturalSpotlight } from "@/components/landing/cultural-spotlight";
+import { CtaSection } from "../cta-section";
+import { FeaturesSection } from "../features-section";
 import { LandingHero } from "../landing-hero";
 
 type LinkMockProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
@@ -27,6 +38,12 @@ vi.mock("next/image", () => ({
 
 const mockUsePaginatedQuery = vi.fn();
 
+class MockIntersectionObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
 vi.mock("convex/react", () => ({
   usePaginatedQuery: (...args: unknown[]) => mockUsePaginatedQuery(...args),
 }));
@@ -44,6 +61,14 @@ vi.mock("@PeerFolio/backend/convex/_generated/api", () => ({
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
+});
+
+beforeAll(() => {
+  vi.stubGlobal("IntersectionObserver", MockIntersectionObserver);
+});
+
+afterAll(() => {
+  vi.unstubAllGlobals();
 });
 
 beforeEach(() => {
@@ -109,6 +134,33 @@ describe("landing contract", () => {
     expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(
       /Vitrine da comunidade/i,
     );
+  });
+
+  it("renders features section hierarchy with editorial copy", () => {
+    render(<FeaturesSection />);
+
+    expect(screen.getByRole("heading", { level: 2, name: "Por que PeerFolio" })).toBeInTheDocument();
+
+    const cardHeadings = screen.getAllByRole("heading", { level: 3 });
+    expect(cardHeadings).toHaveLength(3);
+    expect(cardHeadings[0]).toHaveTextContent(/curadoria editorial/i);
+    expect(cardHeadings[1]).toHaveTextContent(/olhar curado/i);
+    expect(cardHeadings[2]).toHaveTextContent(/reconhecimento que circula/i);
+  });
+
+  it("renders final editorial CTA with dual links contract", () => {
+    render(<CtaSection />);
+
+    expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(
+      /Seu portfolio merece contexto editorial e alcance real\./i,
+    );
+
+    const ctaLinks = screen.getAllByRole("link");
+    expect(ctaLinks).toHaveLength(2);
+    expect(ctaLinks[0]).toHaveAccessibleName("Explorar artistas");
+    expect(ctaLinks[0]).toHaveAttribute("href", "/feed");
+    expect(ctaLinks[1]).toHaveAccessibleName("Publicar meu portfolio");
+    expect(ctaLinks[1]).toHaveAttribute("href", "/submit");
   });
 
   it("announces loading state for screen readers", () => {

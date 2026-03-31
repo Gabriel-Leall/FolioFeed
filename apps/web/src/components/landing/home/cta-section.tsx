@@ -22,21 +22,33 @@ export function CtaSection() {
       <div className="container relative z-10 mx-auto max-w-3xl px-6 text-center">
         <Reveal>
           <h2 className="mb-6 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
-            Pronto para melhorar seu portfolio?
+            Seu portfolio merece contexto editorial e alcance real.
           </h2>
           <p className="mb-10 text-lg text-muted-foreground">
-            Junte-se a milhares de desenvolvedores que ja estao crescendo
-            juntos. E gratuito e facil comecar.
+            Entre em uma vitrine curada para descobrir artistas, acompanhar
+            narrativas criativas e publicar seu trabalho com clareza para gerar
+            reconhecimento.
           </p>
-          <Link href={"/sign-in" as any}>
-            <Button
-              size="lg"
-              className="pf-home-glow-pulse h-12 cursor-pointer bg-primary text-white transition-all duration-200 hover:scale-105 hover:bg-secondary"
-            >
-              Criar Minha Conta
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Link href="/feed">
+              <Button
+                size="lg"
+                className="pf-home-glow-pulse h-12 cursor-pointer bg-primary text-white transition-all duration-200 hover:scale-105 hover:bg-secondary"
+              >
+                Explorar artistas
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href="/submit">
+              <Button
+                size="lg"
+                variant="outline"
+                className="h-12 cursor-pointer border-border/60 bg-surface-container/60 text-foreground transition-all duration-200 hover:scale-105 hover:bg-surface-container"
+              >
+                Publicar meu portfolio
+              </Button>
+            </Link>
+          </div>
         </Reveal>
       </div>
     </section>
