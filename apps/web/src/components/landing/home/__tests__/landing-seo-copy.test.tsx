@@ -52,24 +52,20 @@ describe("landing contract", () => {
   });
 
   it("renders editorial hero with dual CTA contract", () => {
-    vi
-      .spyOn(HTMLCanvasElement.prototype, "getContext")
-      .mockReturnValue(null);
-
     render(<LandingHero />);
 
-    const h1 = screen.getAllByRole("heading", { level: 1 });
-    expect(h1).toHaveLength(1);
-    expect(h1[0]).toHaveTextContent(
+    const h1 = screen.getByRole("heading", { level: 1 });
+    expect(h1).toHaveTextContent(
       /Onde artistas digitais transformam portfolio em reconhecimento\./i,
     );
-    expect(screen.getByRole("link", { name: /explorar artistas/i })).toHaveAttribute(
-      "href",
-      "/feed",
-    );
-    expect(screen.getByRole("link", { name: /publicar meu portfolio/i })).toHaveAttribute(
-      "href",
-      "/submit",
-    );
+
+    expect(screen.getByRole("region", { name: h1.textContent ?? "" })).toBeInTheDocument();
+
+    const ctaLinks = screen.getAllByRole("link");
+    expect(ctaLinks).toHaveLength(2);
+    expect(ctaLinks[0]).toHaveAccessibleName("Explorar artistas");
+    expect(ctaLinks[0]).toHaveAttribute("href", "/feed");
+    expect(ctaLinks[1]).toHaveAccessibleName("Publicar meu portfolio");
+    expect(ctaLinks[1]).toHaveAttribute("href", "/submit");
   });
 });

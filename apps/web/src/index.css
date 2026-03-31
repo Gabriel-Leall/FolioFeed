@@ -222,8 +222,7 @@
   .pf-home-gradient-text,
   .pf-home-glow-pulse,
   .pf-home-marquee-track {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation: none !important;
+    transition: none !important;
   }
 }

@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 
-import { Button } from "@PeerFolio/ui/components/button";
-
 export function LandingHero() {
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background">
+    <section
+      className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background"
+      aria-labelledby="landing-hero-title"
+    >
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div className="pf-home-hline" />
         <div className="pf-home-hline" />
@@ -30,7 +31,10 @@ export function LandingHero() {
           Comunidade curada para portfolios criativos
         </p>
 
-        <h1 className="pf-home-fade-2 mb-8 font-serif text-5xl leading-tight tracking-tight text-on-surface md:text-7xl">
+        <h1
+          id="landing-hero-title"
+          className="pf-home-fade-2 mb-8 font-serif text-5xl leading-tight tracking-tight text-on-surface md:text-7xl"
+        >
           Onde artistas digitais transformam portfolio em reconhecimento.
         </h1>
 
@@ -40,20 +44,20 @@ export function LandingHero() {
         </p>
 
         <div className="pf-home-fade-4 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-5">
-          <Link href="/feed" className="w-full sm:w-auto" aria-label="Explorar artistas">
-            <Button size="lg" className="h-12 w-full rounded-md px-7 sm:w-auto">
-              Explorar artistas
-            </Button>
+          <Link
+            href="/feed"
+            aria-label="Explorar artistas"
+            className="inline-flex h-12 w-full items-center justify-center rounded-md bg-primary px-7 font-sans text-sm font-semibold text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto"
+          >
+            Explorar artistas
           </Link>
 
-          <Link href="/submit" className="w-full sm:w-auto" aria-label="Publicar meu portfolio">
-            <Button
-              variant="outline"
-              size="lg"
-              className="h-12 w-full rounded-md border-border/60 bg-surface-container/70 px-7 text-on-surface hover:bg-surface-container-high sm:w-auto"
-            >
-              Publicar meu portfolio
-            </Button>
+          <Link
+            href="/submit"
+            aria-label="Publicar meu portfolio"
+            className="inline-flex h-12 w-full items-center justify-center rounded-md border border-border/60 bg-surface-container/70 px-7 font-sans text-sm font-semibold text-on-surface shadow-xs transition-colors hover:bg-surface-container-high focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto"
+          >
+            Publicar meu portfolio
           </Link>
         </div>
       </div>
