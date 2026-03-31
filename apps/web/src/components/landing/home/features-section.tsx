@@ -66,11 +66,17 @@ function FeatureCard({
 
 export function FeaturesSection() {
   return (
-    <section className="bg-background py-24 md:py-32">
+    <section
+      aria-labelledby="features-section-title"
+      className="bg-background py-24 md:py-32"
+    >
       <div className="container mx-auto max-w-7xl px-6">
         <Reveal>
           <div className="mb-14 text-center">
-            <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
+            <h2
+              className="mb-4 text-3xl font-bold tracking-tight md:text-4xl"
+              id="features-section-title"
+            >
               Por que PeerFolio
             </h2>
             <p className="mx-auto max-w-2xl text-muted-foreground">

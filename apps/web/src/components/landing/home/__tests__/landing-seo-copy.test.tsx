@@ -1,5 +1,9 @@
 import { cleanup, render, screen } from "@testing-library/react";
-import type { AnchorHTMLAttributes, ReactNode } from "react";
+import type {
+  AnchorHTMLAttributes,
+  ImgHTMLAttributes,
+  ReactNode,
+} from "react";
 import {
   afterAll,
   afterEach,
@@ -31,9 +35,20 @@ vi.mock("next/link", () => ({
 }));
 
 vi.mock("next/image", () => ({
-  default: ({ alt, src, ...props }: { alt: string; src: string }) =>
+  default: ({
+    alt,
+    fill: _fill,
+    priority: _priority,
+    src,
+    ...props
+  }: ImgHTMLAttributes<HTMLImageElement> & {
+    alt: string;
+    src: string | { src: string };
+    fill?: boolean;
+    priority?: boolean;
+  }) =>
     // eslint-disable-next-line @next/next/no-img-element
-    <img alt={alt} src={src} {...props} />,
+    <img alt={alt} src={typeof src === "string" ? src : src.src} {...props} />,
 }));
 
 const mockUsePaginatedQuery = vi.fn();
@@ -144,6 +159,7 @@ describe("landing contract", () => {
     render(<FeaturesSection />);
 
     expect(screen.getByRole("heading", { level: 2, name: "Por que PeerFolio" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Por que PeerFolio" })).toBeInTheDocument();
 
     const cardHeadings = screen.getAllByRole("heading", { level: 3 });
     expect(cardHeadings).toHaveLength(3);
