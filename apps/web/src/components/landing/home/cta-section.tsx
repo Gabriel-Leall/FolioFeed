@@ -9,7 +9,7 @@ import { Reveal } from "./reveal";
 
 export function CtaSection() {
   return (
-    <section className="relative overflow-hidden bg-background py-28 md:py-36">
+    <section id="cta" className="relative overflow-hidden bg-background py-28 md:py-36">
       <div
         className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-125 w-175 rounded-full opacity-15 blur-3xl"
         style={{

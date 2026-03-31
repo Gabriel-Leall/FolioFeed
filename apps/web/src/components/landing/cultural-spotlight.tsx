@@ -13,7 +13,7 @@ export function CulturalSpotlight() {
   );
 
   return (
-    <section className="mx-auto max-w-7xl px-6 py-28 md:py-32">
+    <section id="portfolios" className="mx-auto max-w-7xl px-6 py-28 md:py-32">
       <div className="mb-18 flex items-end justify-between gap-6 md:mb-22 cursor-default">
         <h2 className="font-serif text-4xl font-semibold text-on-surface md:text-6xl">
           Destaques Culturais

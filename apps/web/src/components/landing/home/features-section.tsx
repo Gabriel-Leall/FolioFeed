@@ -68,7 +68,7 @@ function FeatureCard({
 
 export function FeaturesSection() {
   return (
-    <section className="relative bg-background py-28 md:py-36">
+    <section id="features" className="relative bg-background py-28 md:py-36">
       <div className="container mx-auto max-w-7xl px-6">
         <Reveal>
           <div className="mb-16 text-center md:mb-18">

@@ -28,17 +28,13 @@ export default function Home() {
     <div className="min-h-screen overflow-x-hidden">
       <LandingHero />
 
-      <div id="portfolios" className="bg-muted/20">
+      <div className="bg-muted/20">
         <CulturalSpotlight />
       </div>
 
-      <div id="features">
-        <FeaturesSection />
-      </div>
+      <FeaturesSection />
 
-      <div id="cta">
-        <CtaSection />
-      </div>
+      <CtaSection />
 
       <footer className="border-t border-border/40 bg-background">
         <div className="container mx-auto max-w-7xl px-6 py-14">
