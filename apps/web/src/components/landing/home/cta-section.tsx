@@ -3,17 +3,13 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-import { buttonVariants } from "@PeerFolio/ui/components/button";
-import { cn } from "@PeerFolio/ui/lib/utils";
+import { Button } from "@PeerFolio/ui/components/button";
 
 import { Reveal } from "./reveal";
 
 export function CtaSection() {
   return (
-    <section
-      className="relative overflow-hidden bg-background py-24 md:py-32"
-      aria-labelledby="cta-section-title"
-    >
+    <section className="relative overflow-hidden bg-background py-28 md:py-36">
       <div
         className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-125 w-175 rounded-full opacity-15 blur-3xl"
         style={{
@@ -23,40 +19,24 @@ export function CtaSection() {
         aria-hidden="true"
       />
 
-      <div className="container relative z-10 mx-auto max-w-3xl px-6 text-center">
+      <div className="container relative z-10 mx-auto max-w-4xl px-6 text-center">
         <Reveal>
-          <h2
-            id="cta-section-title"
-            className="mb-6 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl"
-          >
-            Seu portfolio merece contexto editorial e alcance real.
+          <h2 className="mx-auto mb-6 max-w-3xl font-serif text-4xl font-semibold leading-tight tracking-tight text-on-surface md:text-5xl">
+            Pronto para melhorar seu portfolio?
           </h2>
-          <p className="mb-10 text-lg text-muted-foreground">
-            Entre em uma vitrine curada para descobrir artistas, acompanhar
-            narrativas criativas e publicar seu trabalho com clareza para gerar
-            reconhecimento.
+          <p className="mx-auto mb-11 max-w-2xl font-sans text-base leading-relaxed text-muted-foreground md:text-lg">
+            Junte-se a milhares de desenvolvedores que ja estao crescendo
+            juntos. E gratuito e facil comecar.
           </p>
-          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link
-              href="/feed"
-              className={cn(
-                buttonVariants({ size: "lg" }),
-                "pf-home-glow-pulse h-12 bg-primary text-white transition-all duration-200 hover:scale-105 hover:bg-secondary",
-              )}
+          <Link href={"/sign-in" as any}>
+            <Button
+              size="lg"
+              className="pf-home-glow-pulse h-12 cursor-pointer bg-primary text-white transition-all duration-200 hover:scale-105 hover:bg-secondary"
             >
-              Explorar artistas
+              Criar Minha Conta
               <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-            <Link
-              href="/submit"
-              className={cn(
-                buttonVariants({ size: "lg", variant: "outline" }),
-                "h-12 border-border/60 bg-surface-container/60 text-foreground transition-all duration-200 hover:scale-105 hover:bg-surface-container",
-              )}
-            >
-              Publicar meu portfolio
-            </Link>
-          </div>
+            </Button>
+          </Link>
         </Reveal>
       </div>
     </section>

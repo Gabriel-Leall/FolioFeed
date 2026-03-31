@@ -9,21 +9,21 @@ import { Reveal } from "./reveal";
 const features = [
   {
     icon: <MessageSquare className="h-6 w-6" />,
-    title: "Curadoria editorial de portfolios",
+    title: "Obtenha Criticas Construtivas",
     description:
-      "Destaques selecionados para facilitar a descoberta de trabalhos autorais com qualidade visual e narrativa clara.",
+      "Receba feedback genuino de outros desenvolvedores que querem ajudar voce a melhorar.",
   },
   {
     icon: <Lightbulb className="h-6 w-6" />,
-    title: "Descoberta com curadoria especializada",
+    title: "Descubra Inspiracao",
     description:
-      "Explore galerias organizadas por estilo, processo e contexto para encontrar referencias que realmente inspiram novas direcoes.",
+      "Explore portfolios de devs talentosos e encontre novas ideias para seus proprios projetos.",
   },
   {
     icon: <Users className="h-6 w-6" />,
-    title: "Reconhecimento que circula na comunidade",
+    title: "Cresca Junto",
     description:
-      "Publique seu portfolio em uma vitrine curada para ampliar alcance, fortalecer reputacao e gerar novas oportunidades criativas.",
+      "Faca parte de uma comunidade engajada focada em crescimento mutuo e aprendizado continuo.",
   },
 ];
 
@@ -42,7 +42,7 @@ function FeatureCard({
     <Reveal delay={delay}>
       <div
         className={cn(
-          "group relative overflow-hidden rounded-2xl border border-border/60 bg-background/60 p-7 backdrop-blur-sm",
+          "group relative overflow-hidden rounded-2xl border border-border/60 bg-background/60 p-7 md:p-8 backdrop-blur-sm",
           "transition-all duration-300 ease-out",
           "hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10",
           "hover:scale-[1.02] cursor-default",
@@ -54,8 +54,10 @@ function FeatureCard({
           <div className="mb-5 inline-flex rounded-xl bg-primary/10 p-3 text-primary transition-colors duration-200 group-hover:bg-primary/20">
             {icon}
           </div>
-          <h3 className="mb-2 text-lg font-semibold tracking-tight">{title}</h3>
-          <p className="text-sm leading-relaxed text-muted-foreground">
+          <h3 className="mb-3 font-sans text-xl font-semibold tracking-tight text-on-surface">
+            {title}
+          </h3>
+          <p className="font-sans text-sm leading-relaxed text-muted-foreground md:text-base">
             {description}
           </p>
         </div>
@@ -66,28 +68,22 @@ function FeatureCard({
 
 export function FeaturesSection() {
   return (
-    <section
-      aria-labelledby="features-section-title"
-      className="bg-background py-24 md:py-32"
-    >
+    <section className="relative bg-background py-28 md:py-36">
       <div className="container mx-auto max-w-7xl px-6">
         <Reveal>
-          <div className="mb-14 text-center">
-            <h2
-              className="mb-4 text-3xl font-bold tracking-tight md:text-4xl"
-              id="features-section-title"
-            >
-              Por que PeerFolio
+          <div className="mb-16 text-center md:mb-18">
+            <h2 className="mb-5 font-serif text-4xl font-semibold leading-tight tracking-tight text-on-surface md:text-5xl">
+              Por que escolher o <span className="text-primary">PeerFolio</span>
+              ?
             </h2>
-            <p className="mx-auto max-w-2xl text-muted-foreground">
-              Uma plataforma editorial para descobrir portfolios criativos,
-              publicar trabalhos autorais e transformar visibilidade em
-              reconhecimento.
+            <p className="mx-auto max-w-2xl font-sans text-base leading-relaxed text-muted-foreground md:text-lg">
+              Uma plataforma construida para desenvolvedores que buscam crescer
+              atraves de feedback genuino e colaboracao.
             </p>
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, index) => (
             <FeatureCard
               key={feature.title}
