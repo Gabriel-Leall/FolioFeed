@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@PeerFolio/ui/components/dropdown-menu";
 import { useMutation, useQuery } from "convex/react";
+import dynamic from "next/dynamic";
 import { Avatar } from "@heroui/react";
 import { Bell, LogOut, User } from "lucide-react";
 import Link from "next/link";
@@ -19,16 +20,19 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 
-import { ModeToggle } from "./mode-toggle";
+const ModeToggle = dynamic(
+  () => import("./mode-toggle").then((mod) => mod.ModeToggle),
+  { ssr: false },
+);
 import { getProfileRoute } from "@/lib/profile-route";
 
 export default function Header() {
   const { isSignedIn, user } = useUser();
   const { signOut } = useClerk();
-  const me = useQuery(api.users.queries.getMe);
+  const me = useQuery(api.users.queries.getMe, isSignedIn ? {} : "skip");
   const unreadNotifications = useQuery(
     api.users.queries.getUnreadNotifications,
-    {},
+    isSignedIn ? {} : "skip",
   );
   const markNotificationsAsRead = useMutation(
     api.users.mutations.markNotificationsAsRead,

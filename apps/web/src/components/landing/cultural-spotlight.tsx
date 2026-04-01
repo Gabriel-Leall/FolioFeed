@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePaginatedQuery } from "convex/react";
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 import { api } from "@PeerFolio/backend/convex/_generated/api";
 
 export function CulturalSpotlight() {
@@ -50,9 +51,11 @@ export function CulturalSpotlight() {
                 className={`group flex h-125 flex-col overflow-hidden rounded-xl border-none bg-surface-container transition-all duration-500 hover:bg-surface-container-high ${isElevated ? "bg-surface-container-high hover:bg-surface-container-highest md:-mt-12" : "md:mt-12"}`}
               >
                 <div className="relative h-2/3 w-full overflow-hidden">
-                  <img
+                  <Image
                     alt={portfolio.title}
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                    className="h-full w-full object-cover grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
                     src={
                       portfolio.previewImageUrl ||
                       "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop"

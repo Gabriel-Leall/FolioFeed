@@ -1,27 +1,17 @@
-"use client";
-
-import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 import { CulturalSpotlight } from "@/components/landing/cultural-spotlight";
 import { CtaSection } from "@/components/landing/home/cta-section";
 import { FeaturesSection } from "@/components/landing/home/features-section";
 import { LandingHero } from "@/components/landing/home/landing-hero";
 
-export default function Home() {
-  const { isLoaded, isSignedIn } = useUser();
-  const router = useRouter();
+export default async function Home() {
+  const { userId } = await auth();
 
-  useEffect(() => {
-    if (isLoaded && isSignedIn) {
-      router.replace("/feed");
-    }
-  }, [isLoaded, isSignedIn, router]);
-
-  if (!isLoaded || isSignedIn) {
-    return null;
+  if (userId) {
+    redirect("/feed");
   }
 
   return (

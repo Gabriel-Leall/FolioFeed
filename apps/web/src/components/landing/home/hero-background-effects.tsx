@@ -34,7 +34,7 @@ export function HeroBackgroundEffects() {
       fadingOut: boolean;
     };
 
-    const count = () => Math.floor((canvas.width * canvas.height) / 8000);
+    const count = () => Math.floor((canvas.width * canvas.height) / 12000);
 
     const make = (): Particle => {
       const fadeDelay = Math.random() * 600 + 100;
@@ -72,6 +72,16 @@ export function HeroBackgroundEffects() {
       particleHeightScale = isDark ? 1 : 1.2;
       canvas.style.mixBlendMode = isDark ? "screen" : "normal";
       canvas.style.opacity = isDark ? "0.5" : "0.48";
+
+      if (window.innerWidth < 768) {
+        canvas.style.opacity = isDark ? "0.4" : "0.36";
+      }
+
+      if (window.innerWidth < 1024) {
+        canvas.style.display = "none";
+      } else {
+        canvas.style.display = "block";
+      }
     };
 
     const init = () => {
@@ -104,6 +114,7 @@ export function HeroBackgroundEffects() {
 
     const onResize = () => {
       setSize();
+      applyTheme();
       init();
     };
 

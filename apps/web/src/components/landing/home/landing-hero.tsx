@@ -2,17 +2,26 @@
 
 import { Code2, MessageSquare, Users } from "lucide-react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 import { FlowButton } from "@/components/flow-button";
 import { Button } from "@PeerFolio/ui/components/button";
-import { HeroBackgroundEffects } from "./hero-background-effects";
+
+const HeroBackgroundEffects = dynamic(
+  () => import("./hero-background-effects").then((mod) => mod.HeroBackgroundEffects),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
+
+const STATS = [
+  { icon: <Code2 className="h-4 w-4" />, value: "2.5K+", label: "Portfolios" },
+  { icon: <MessageSquare className="h-4 w-4" />, value: "8K+", label: "Criticas" },
+  { icon: <Users className="h-4 w-4" />, value: "1.2K+", label: "Desenvolvedores" },
+];
 
 export function LandingHero() {
-  const stats = [
-    { icon: <Code2 className="h-4 w-4" />, value: "2.5K+", label: "Portfolios" },
-    { icon: <MessageSquare className="h-4 w-4" />, value: "8K+", label: "Criticas" },
-    { icon: <Users className="h-4 w-4" />, value: "1.2K+", label: "Desenvolvedores" },
-  ];
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
@@ -48,7 +57,7 @@ export function LandingHero() {
         </div>
 
         <div className="pf-home-fade-4 mt-8 flex w-full flex-wrap items-center justify-center gap-x-8 gap-y-3 font-body">
-          {stats.map((stat) => (
+          {STATS.map((stat) => (
             <div
               key={stat.label}
               className="flex items-center justify-center gap-2 text-base text-on-surface-variant"
