@@ -116,7 +116,7 @@ export function LandingHero() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
       <canvas
         ref={canvasRef}
-        className="pointer-events-none absolute inset-0 h-full w-full opacity-50"
+        className="pointer-events-none absolute inset-0 h-full w-full opacity-50 dark:opacity-50"
         style={{ mixBlendMode: "screen" }}
       />
 
@@ -130,17 +130,16 @@ export function LandingHero() {
       </div>
 
       <div
-        className="pointer-events-none absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 h-125 w-175 rounded-full opacity-60 blur-3xl"
+        className="pointer-events-none absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 h-125 w-175 rounded-full opacity-60 blur-3xl dark:opacity-60"
         style={{
-          background:
-            "radial-gradient(ellipse, rgba(132,94,247,0.25), rgba(121,80,242,0.16), transparent 72%)",
+          background: "oklch(var(--color-primary) / 0.25)",
         }}
         aria-hidden="true"
       />
 
       <div
-        className="pointer-events-none absolute left-[43%] top-[22%] h-40 w-40 rounded-full opacity-30 blur-3xl"
-        style={{ background: "rgba(199, 173, 255, 0.28)" }}
+        className="pointer-events-none absolute left-[43%] top-[22%] h-40 w-40 rounded-full opacity-30 blur-3xl dark:opacity-30"
+        style={{ background: "oklch(var(--color-primary) / 0.35)" }}
         aria-hidden="true"
       />
 
@@ -166,7 +165,7 @@ export function LandingHero() {
             <Button
               variant="outline"
               size="lg"
-              className="h-12 rounded-full border border-white/10 bg-[#131313]/85 px-7 text-sm font-medium text-white transition-all duration-150 ease-out hover:border-primary/60 hover:bg-[#1b1b1f] hover:text-[#e9dcff] active:scale-[0.97]"
+              className="h-12 rounded-full border border-border/60 bg-background/85 px-7 text-sm font-medium text-on-surface transition-all duration-150 ease-out hover:border-primary/60 hover:bg-muted hover:text-on-surface active:scale-[0.97]"
             >
               Explorar Arquivo
             </Button>
@@ -177,17 +176,17 @@ export function LandingHero() {
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className="flex items-center justify-center gap-2 text-base text-foreground/55"
+              className="flex items-center justify-center gap-2 text-base text-on-surface-variant"
             >
-              <div className="text-primary/45">{stat.icon}</div>
-              <span className="font-semibold text-foreground/70">{stat.value}</span>
-              <span className="text-foreground/45">{stat.label}</span>
+              <div className="text-primary/60 dark:text-primary/45">{stat.icon}</div>
+              <span className="font-semibold text-on-surface/70">{stat.value}</span>
+              <span className="text-on-surface-variant/70">{stat.label}</span>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-background to-transparent" />
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-background to-transparent dark:from-background" />
     </section>
   );
 }
