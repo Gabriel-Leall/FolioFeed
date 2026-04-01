@@ -2,110 +2,12 @@
 
 import { Code2, MessageSquare, Users } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
 
 import { FlowButton } from "@/components/flow-button";
 import { Button } from "@PeerFolio/ui/components/button";
-
-function useParticleCanvas(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) return;
-
-    const setSize = () => {
-      const parent = canvas.parentElement;
-      if (!parent) return;
-      canvas.width = parent.clientWidth;
-      canvas.height = parent.clientHeight;
-    };
-    setSize();
-
-    type Particle = {
-      x: number;
-      y: number;
-      speed: number;
-      opacity: number;
-      fadeDelay: number;
-      fadeStart: number;
-      fadingOut: boolean;
-    };
-
-    let particles: Particle[] = [];
-    let raf = 0;
-
-    const count = () => Math.floor((canvas.width * canvas.height) / 8000);
-
-    const make = (): Particle => {
-      const fadeDelay = Math.random() * 600 + 100;
-      return {
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        speed: Math.random() / 5 + 0.1,
-        opacity: 0.7,
-        fadeDelay,
-        fadeStart: Date.now() + fadeDelay,
-        fadingOut: false,
-      };
-    };
-
-    const reset = (particle: Particle) => {
-      particle.x = Math.random() * canvas.width;
-      particle.y = Math.random() * canvas.height;
-      particle.speed = Math.random() / 5 + 0.1;
-      particle.opacity = 0.7;
-      particle.fadeDelay = Math.random() * 600 + 100;
-      particle.fadeStart = Date.now() + particle.fadeDelay;
-      particle.fadingOut = false;
-    };
-
-    const init = () => {
-      particles = [];
-      for (let i = 0; i < count(); i++) particles.push(make());
-    };
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (const particle of particles) {
-        particle.y -= particle.speed;
-        if (particle.y < 0) reset(particle);
-        if (!particle.fadingOut && Date.now() > particle.fadeStart) {
-          particle.fadingOut = true;
-        }
-        if (particle.fadingOut) {
-          particle.opacity -= 0.008;
-          if (particle.opacity <= 0) reset(particle);
-        }
-
-        ctx.fillStyle = `rgba(216, 196, 255, ${particle.opacity})`;
-        ctx.fillRect(particle.x, particle.y, 0.8, Math.random() * 2 + 1);
-      }
-      raf = requestAnimationFrame(draw);
-    };
-
-    const onResize = () => {
-      setSize();
-      init();
-    };
-
-    window.addEventListener("resize", onResize);
-    init();
-    raf = requestAnimationFrame(draw);
-
-    return () => {
-      window.removeEventListener("resize", onResize);
-      cancelAnimationFrame(raf);
-    };
-  }, [canvasRef]);
-}
+import { HeroBackgroundEffects } from "./hero-background-effects";
 
 export function LandingHero() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  useParticleCanvas(canvasRef);
   const stats = [
     { icon: <Code2 className="h-4 w-4" />, value: "2.5K+", label: "Portfolios" },
     { icon: <MessageSquare className="h-4 w-4" />, value: "8K+", label: "Criticas" },
@@ -114,34 +16,7 @@ export function LandingHero() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
-      <canvas
-        ref={canvasRef}
-        className="pointer-events-none absolute inset-0 h-full w-full opacity-50 dark:opacity-50"
-        style={{ mixBlendMode: "screen" }}
-      />
-
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="pf-home-hline" />
-        <div className="pf-home-hline" />
-        <div className="pf-home-hline" />
-        <div className="pf-home-vline" />
-        <div className="pf-home-vline" />
-        <div className="pf-home-vline" />
-      </div>
-
-      <div
-        className="pointer-events-none absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 h-125 w-175 rounded-full opacity-60 blur-3xl dark:opacity-60"
-        style={{
-          background: "oklch(var(--color-primary) / 0.25)",
-        }}
-        aria-hidden="true"
-      />
-
-      <div
-        className="pointer-events-none absolute left-[43%] top-[22%] h-40 w-40 rounded-full opacity-30 blur-3xl dark:opacity-30"
-        style={{ background: "oklch(var(--color-primary) / 0.35)" }}
-        aria-hidden="true"
-      />
+      <HeroBackgroundEffects />
 
       <div className="relative z-10 mx-auto max-w-5xl px-6 text-center">
         <h1 className="pf-home-fade-1 mb-12 font-headline text-5xl leading-tight tracking-tight text-on-surface md:text-8xl">
@@ -186,7 +61,6 @@ export function LandingHero() {
         </div>
       </div>
 
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-background to-transparent dark:from-background" />
     </section>
   );
 }

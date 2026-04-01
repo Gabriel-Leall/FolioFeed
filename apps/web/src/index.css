@@ -95,10 +95,14 @@
   height: 1px;
   left: 0;
   right: 0;
-  background: oklch(var(--color-primary) / 0.2);
+  background: rgba(76, 110, 245, 0.22);
   transform: scaleX(0);
   transform-origin: 50% 50%;
   animation: pf-home-draw-x 900ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.dark .pf-home-hline {
+  background: rgba(199, 173, 255, 0.16);
 }
 
 .pf-home-hline:nth-child(1) {
@@ -120,10 +124,14 @@
   width: 1px;
   top: 0;
   bottom: 0;
-  background: oklch(var(--color-primary) / 0.2);
+  background: rgba(76, 110, 245, 0.22);
   transform: scaleY(0);
   transform-origin: 50% 0%;
   animation: pf-home-draw-y 1000ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+.dark .pf-home-vline {
+  background: rgba(199, 173, 255, 0.16);
 }
 
 .pf-home-vline:nth-child(4) {
@@ -149,11 +157,16 @@
   background: linear-gradient(
     90deg,
     transparent,
-    oklch(var(--color-primary) / 0.4),
+    rgba(76, 110, 245, 0.32),
     transparent
   );
   opacity: 0;
   animation: pf-home-shimmer 1s ease-out forwards;
+}
+
+.dark .pf-home-hline::after,
+.dark .pf-home-vline::after {
+  background: linear-gradient(90deg, transparent, rgba(216, 196, 255, 0.3), transparent);
 }
 
 .pf-home-hline:nth-child(1)::after {
