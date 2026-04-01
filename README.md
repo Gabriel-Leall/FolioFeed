@@ -1,102 +1,100 @@
 # PeerFolio
 
-This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines Next.js, Convex, and more.
+PeerFolio e uma plataforma para desenvolvedores compartilharem portfolios, receberem criticas construtivas e evoluirem em comunidade.
 
-## Features
+Este repositorio usa monorepo com Turborepo, frontend em Next.js e backend em Convex.
 
-- **TypeScript** - For type safety and improved developer experience
-- **Next.js** - Full-stack React framework
-- **TailwindCSS** - Utility-first CSS for rapid UI development
-- **HeroUI** - Componentes UI principais do projeto ([HeroUI](https://heroui.com/))
-- **Shared UI package** - Alternativas usando shadcn/ui na pasta `packages/ui`
-- **Convex** - Reactive backend-as-a-service platform
-- **Authentication** - Clerk
-- **Husky** - Git hooks for code quality
-- **Turborepo** - Optimized monorepo build system
+## Stack
 
-## Getting Started
+- `Next.js 16` (App Router)
+- `React 19` + `TypeScript`
+- `Convex` (queries, mutations, realtime)
+- `Clerk` (autenticacao)
+- `Tailwind CSS v4`
+- `HeroUI` como biblioteca principal de UI
+- `packages/ui` com componentes compartilhados (fallbacks shadcn/ui)
+- `Turborepo` para orquestracao
 
-First, install the dependencies:
+## Requisitos
+
+- `bun` `>=1.3`
+- Conta/Projeto Convex
+- Chaves do Clerk
+
+## Setup rapido
+
+1. Instale dependencias:
 
 ```bash
 bun install
 ```
 
-## Convex Setup
-
-This project uses Convex as a backend. You'll need to set up Convex before running the app:
+2. Configure Convex:
 
 ```bash
 bun run dev:setup
 ```
 
-Follow the prompts to create a new Convex project and connect it to your application.
+3. Configure variaveis de ambiente:
 
-Copy environment variables from `packages/backend/.env.local` to `apps/*/.env`.
+- Copie os valores de `packages/backend/.env.local` para `apps/*/.env`
+- Defina no Convex Dashboard: `CLERK_JWT_ISSUER_DOMAIN`
+- Defina em `apps/*/.env`: `CLERK_PUBLISHABLE_KEY`
 
-### Clerk Authentication Setup
-
-- Follow the guide: [Convex + Clerk](https://docs.convex.dev/auth/clerk)
-- Set `CLERK_JWT_ISSUER_DOMAIN` in Convex Dashboard
-- Set `CLERK_PUBLISHABLE_KEY` in `apps/*/.env`
-
-Then, run the development server:
+4. Rode em desenvolvimento:
 
 ```bash
 bun run dev
 ```
 
-Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
-Your app will connect to the Convex cloud backend automatically.
+App web: `http://localhost:3001`
 
-## UI Customization
+## Scripts principais
 
-O foco principal de UI neste projeto é a **HeroUI**. Quando um componente não estiver disponível na HeroUI, utilizamos os componentes shadcn/ui como fallback que são compartilhados via `packages/ui`.
+- `bun run dev` - sobe o monorepo em modo desenvolvimento
+- `bun run dev:web` - sobe apenas `apps/web`
+- `bun run dev:server` - sobe apenas backend Convex
+- `bun run build` - build de todos os apps/packages
+- `bun run check-types` - checagem de tipos em todo o monorepo
+- `bun run prepare` - inicializa git hooks (husky)
 
-- Use sempre componentes da HeroUI (`@heroui/react`) primeiramente.
-- Fallbacks utilizando shadcn/ui ficam em `packages/ui/src/components/*`
-- Altere design tokens e estilos em `packages/ui/src/styles/globals.css`
-- Ajuste os paths do shadcn ou configurações de estilo em `packages/ui/components.json` e `apps/web/components.json`
+## Estrutura do projeto
 
-### Adicionar mais componentes de fallback
-
-Execute este comando na raiz do projeto para adicionar novas primitivas do shadcn/ui como alternativas:
-
-```bash
-npx shadcn@latest add accordion dialog popover sheet table -c packages/ui
+```text
+PeerFolio/
+├── apps/
+│   └── web/                 # Next.js app
+├── packages/
+│   ├── backend/
+│   │   └── convex/          # Funcoes Convex, schema e regras de dominio
+│   └── ui/
+│       ├── src/components/  # Componentes compartilhados
+│       └── src/styles/      # Tokens e temas globais
 ```
 
-Importe os componentes compartilhados assim (referente aos fallbacks com shadcn/ui):
+## UI e temas
+
+- Priorize componentes de `@heroui/react`
+- Use `@PeerFolio/ui/components/*` quando precisar de fallback/reuso compartilhado
+- Tokens de tema (dark/light) em `packages/ui/src/styles/globals.css`
+- Tema controlado por `next-themes` no app web
+
+Import de componentes compartilhados:
 
 ```tsx
 import { Button } from "@PeerFolio/ui/components/button";
 ```
 
-### Add app-specific blocks
+## Favicons e metadados de app
 
-If you want to add app-specific blocks instead of shared primitives, run the shadcn CLI from `apps/web`.
+No Next.js App Router, os icones globais estao em:
 
-## Git Hooks and Formatting
+- `apps/web/src/app/favicon.ico`
+- `apps/web/src/app/icon.png`
+- `apps/web/src/app/apple-icon.png`
 
-- Initialize hooks: `bun run prepare`
+## Qualidade e contribuicao
 
-## Project Structure
-
-```
-PeerFolio/
-├── apps/
-│   ├── web/         # Frontend application (Next.js)
-├── packages/
-│   ├── ui/          # Shared shadcn/ui components and styles
-│   ├── backend/     # Convex backend functions and schema
-│   │   ├── convex/    # Convex functions and schema
-│   │   └── .env.local # Convex environment variables
-```
-
-## Available Scripts
-
-- `bun run dev`: Start all applications in development mode
-- `bun run build`: Build all applications
-- `bun run dev:web`: Start only the web application
-- `bun run dev:setup`: Setup and configure your Convex project
-- `bun run check-types`: Check TypeScript types across all apps
+- Commits pequenos e focados
+- Sempre rode build/check-types antes de abrir PR
+- Evite regressao visual em dark/light theme
