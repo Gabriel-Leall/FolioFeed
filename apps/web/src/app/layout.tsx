@@ -25,7 +25,7 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3001",
+    process.env.NEXT_PUBLIC_APP_URL ?? "https://peerfolio-eight.vercel.app",
   ),
   title: {
     default: "PeerFolio",
