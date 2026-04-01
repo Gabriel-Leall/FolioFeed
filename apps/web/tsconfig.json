@@ -30,6 +30,9 @@
       ],
       "@PeerFolio/ui/*": [
         "../../packages/ui/src/*"
+      ],
+      "@peerFolio/backend/*": [
+        "../../packages/backend/*"
       ]
     }
   },
