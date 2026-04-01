@@ -62,12 +62,16 @@ export function HeroBackgroundEffects() {
     let particles: Particle[] = [];
     let raf = 0;
     let particleRgb = "216, 196, 255";
+    let particleOpacityScale = 1;
+    let particleHeightScale = 1;
 
     const applyTheme = () => {
       const isDark = root.classList.contains("dark");
-      particleRgb = isDark ? "216, 196, 255" : "76, 110, 245";
-      canvas.style.mixBlendMode = isDark ? "screen" : "multiply";
-      canvas.style.opacity = isDark ? "0.5" : "0.36";
+      particleRgb = isDark ? "216, 196, 255" : "52, 116, 255";
+      particleOpacityScale = isDark ? 1 : 1.35;
+      particleHeightScale = isDark ? 1 : 1.2;
+      canvas.style.mixBlendMode = isDark ? "screen" : "normal";
+      canvas.style.opacity = isDark ? "0.5" : "0.48";
     };
 
     const init = () => {
@@ -91,8 +95,8 @@ export function HeroBackgroundEffects() {
           if (particle.opacity <= 0) reset(particle);
         }
 
-        ctx.fillStyle = `rgba(${particleRgb}, ${particle.opacity})`;
-        ctx.fillRect(particle.x, particle.y, 0.8, Math.random() * 2 + 1);
+        ctx.fillStyle = `rgba(${particleRgb}, ${Math.min(1, particle.opacity * particleOpacityScale)})`;
+        ctx.fillRect(particle.x, particle.y, 0.8, (Math.random() * 2 + 1) * particleHeightScale);
       }
 
       raf = requestAnimationFrame(draw);
@@ -133,12 +137,12 @@ export function HeroBackgroundEffects() {
       </div>
 
       <div
-        className="pointer-events-none absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 h-125 w-175 rounded-full opacity-55 blur-3xl bg-[radial-gradient(ellipse,rgba(76,110,245,0.22),rgba(76,110,245,0.12),transparent_72%)] dark:bg-[radial-gradient(ellipse,rgba(132,94,247,0.25),rgba(121,80,242,0.16),transparent_72%)]"
+        className="pointer-events-none absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 h-125 w-175 rounded-full opacity-55 blur-3xl bg-[radial-gradient(ellipse,rgba(90,132,255,0.14),rgba(90,132,255,0.07),transparent_72%)] dark:bg-[radial-gradient(ellipse,rgba(132,94,247,0.25),rgba(121,80,242,0.16),transparent_72%)]"
         aria-hidden="true"
       />
 
       <div
-        className="pointer-events-none absolute left-[43%] top-[22%] h-40 w-40 rounded-full opacity-30 blur-3xl bg-[rgba(76,110,245,0.24)] dark:bg-[rgba(199,173,255,0.28)]"
+        className="pointer-events-none absolute left-[43%] top-[22%] h-40 w-40 rounded-full opacity-30 blur-3xl bg-[rgba(90,132,255,0.14)] dark:bg-[rgba(199,173,255,0.28)]"
         aria-hidden="true"
       />
 

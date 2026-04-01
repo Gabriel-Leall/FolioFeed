@@ -184,7 +184,7 @@ export default function Header() {
           />
           <DropdownMenuContent
             align="end"
-            className="w-56 border-white/10 bg-inverse-primary/95 backdrop-blur-xl text-white"
+            className="w-56 border-outline/80 bg-surface-container/95 text-on-surface backdrop-blur-xl"
           >
             <DropdownMenuGroup>
               <DropdownMenuLabel className="font-normal">
@@ -192,15 +192,15 @@ export default function Header() {
                   <p className="text-sm font-medium leading-none">
                     {me?.nickname ?? user?.fullName ?? "Usuário"}
                   </p>
-                  <p className="text-xs leading-none text-white/60">
+                  <p className="text-xs leading-none text-on-surface-variant">
                     {user?.emailAddresses[0]?.emailAddress}
                   </p>
                 </div>
               </DropdownMenuLabel>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator className="bg-white/10" />
+            <DropdownMenuSeparator className="bg-outline/70" />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="text-on-surface focus:bg-surface-container-high focus:text-on-surface">
                 <Link
                   href={getProfileRoute(me) as any}
                   className="flex items-center w-full"
@@ -210,11 +210,11 @@ export default function Header() {
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator className="bg-white/10" />
+            <DropdownMenuSeparator className="bg-outline/70" />
             <DropdownMenuGroup>
               <DropdownMenuItem
                 onClick={() => signOut({ redirectUrl: "/" })}
-                className="text-danger focus:text-danger focus:bg-danger/10 cursor-pointer"
+                className="cursor-pointer text-destructive focus:bg-destructive/15 focus:text-destructive"
               >
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Sair</span>
