@@ -55,7 +55,7 @@ export const submit = mutation({
       throw new ConvexError("UNSAFE_URL");
     }
 
-    // Check if exists as seed
+    // Check if exists as seed (primary path)
     const seededPortfolio = await ctx.db
       .query("portfolios")
       .withIndex("by_isSeeded_and_normalizedUrl", (q) =>
@@ -92,6 +92,25 @@ export const submit = mutation({
       .first();
 
     if (existing !== null && !existing.isDeleted) {
+      // Backward-compat: old seed rows may not have isSeeded=true set.
+      // If the current owner is the seed system user, claim it as seed.
+      const existingAuthor = await ctx.db.get(existing.authorId);
+      if (existingAuthor?.clerkId === "seed-system") {
+        await ctx.db.patch(existing._id, {
+          authorId: user._id,
+          isSeeded: false,
+          title: args.title,
+          stack: args.stack,
+          goalsContext: args.goalsContext,
+        });
+
+        await ctx.db.patch(user._id, {
+          portfoliosCount: user.portfoliosCount + 1,
+        });
+
+        return { portfolioId: existing._id, claimed: true };
+      }
+
       throw new ConvexError({
         code: "DUPLICATE_URL",
         existingPortfolioId: existing._id,
