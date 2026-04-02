@@ -1,5 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import "../index.css";
 import { Newsreader, Manrope, Space_Grotesk } from "next/font/google";
@@ -50,6 +52,8 @@ export default function RootLayout({
             </div>
             <FloatingSubmitButton />
           </Providers>
+          <Analytics />
+          <SpeedInsights />
         </ClerkProvider>
       </body>
     </html>
