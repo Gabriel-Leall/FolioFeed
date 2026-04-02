@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   DEFAULT_LOCALE,
@@ -29,6 +30,7 @@ const isValidLocale = (value: string | null): value is AppLocale =>
   !!value && (SUPPORTED_LOCALES as readonly string[]).includes(value);
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
+  const { t: i18nT } = useTranslation();
   const [locale, setLocaleState] = useState<AppLocale>(DEFAULT_LOCALE);
 
   useEffect(() => {
@@ -70,9 +72,9 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
         ...(typeof options?.count === "number" ? { count: options.count } : {}),
       };
 
-      return String(i18n.t(key, values));
+      return String(i18nT(key, values));
     },
-    [],
+    [i18nT],
   );
 
   const value = useMemo(

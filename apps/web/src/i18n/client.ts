@@ -17,6 +17,8 @@ if (!i18n.isInitialized) {
     fallbackLng: DEFAULT_LOCALE,
     interpolation: {
       escapeValue: false,
+      prefix: "{",
+      suffix: "}",
     },
   });
 }
