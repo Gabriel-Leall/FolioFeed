@@ -3,29 +3,9 @@
 import { Lightbulb, MessageSquare, Users } from "lucide-react";
 
 import { cn } from "@PeerFolio/ui/lib/utils";
+import { useI18n } from "@/i18n/provider";
 
 import { Reveal } from "./reveal";
-
-const features = [
-  {
-    icon: <MessageSquare className="h-6 w-6" />,
-    title: "Obtenha Criticas Construtivas",
-    description:
-      "Receba feedback genuino de outros desenvolvedores que querem ajudar voce a melhorar.",
-  },
-  {
-    icon: <Lightbulb className="h-6 w-6" />,
-    title: "Descubra Inspiracao",
-    description:
-      "Explore portfolios de devs talentosos e encontre novas ideias para seus proprios projetos.",
-  },
-  {
-    icon: <Users className="h-6 w-6" />,
-    title: "Cresca Junto",
-    description:
-      "Faca parte de uma comunidade engajada focada em crescimento mutuo e aprendizado continuo.",
-  },
-];
 
 function FeatureCard({
   icon,
@@ -67,18 +47,36 @@ function FeatureCard({
 }
 
 export function FeaturesSection() {
+  const { t } = useI18n();
+  const brandName = t("brand.name");
+  const features = [
+    {
+      icon: <MessageSquare className="h-6 w-6" />,
+      title: t("landing.features.card1.title"),
+      description: t("landing.features.card1.description"),
+    },
+    {
+      icon: <Lightbulb className="h-6 w-6" />,
+      title: t("landing.features.card2.title"),
+      description: t("landing.features.card2.description"),
+    },
+    {
+      icon: <Users className="h-6 w-6" />,
+      title: t("landing.features.card3.title"),
+      description: t("landing.features.card3.description"),
+    },
+  ];
+
   return (
     <section id="features" className="relative bg-background py-28 md:py-36">
       <div className="container mx-auto max-w-7xl px-6">
         <Reveal>
           <div className="mb-16 text-center md:mb-18">
             <h2 className="mb-5 font-serif text-4xl font-semibold leading-tight tracking-tight text-on-surface md:text-5xl">
-              Por que escolher o <span className="text-primary">PeerFolio</span>
-              ?
+              {t("landing.features.title", { values: { brand: brandName } })}
             </h2>
             <p className="mx-auto max-w-2xl font-sans text-base leading-relaxed text-muted-foreground md:text-lg">
-              Uma plataforma construida para desenvolvedores que buscam crescer
-              atraves de feedback genuino e colaboracao.
+              {t("landing.features.subtitle")}
             </p>
           </div>
         </Reveal>

@@ -15,8 +15,8 @@ export async function generateMetadata({
   const { id } = await params;
 
   return {
-    title: `Portfólio | PeerFolio`,
-    description: "Veja e critiqu este portfólio no PeerFolio.",
+    title: `Portfólio | FolioFeed`,
+    description: "Veja e critique este portfólio no FolioFeed.",
     alternates: {
       canonical: `/portfolio/${id}`,
     },

@@ -1,5 +1,6 @@
 import { Edit, ToggleLeft, ToggleRight } from "lucide-react";
 import Link from "next/link";
+import { useI18n } from "@/i18n/provider";
 
 type UserProfileOwnerActionsProps = {
   isOwner?: boolean;
@@ -14,6 +15,8 @@ export function UserProfileOwnerActions({
   isTogglingAvailability,
   onToggleAvailability,
 }: UserProfileOwnerActionsProps) {
+  const { t } = useI18n();
+
   if (!isOwner) {
     return null;
   }
@@ -25,7 +28,7 @@ export function UserProfileOwnerActions({
         className="inline-flex items-center gap-1.5 rounded-md border border-outline-variant/40 px-3 py-1.5 text-xs font-medium hover:bg-surface-container-high"
       >
         <Edit className="h-3.5 w-3.5" />
-        Editar perfil
+        {t("profile.owner.edit")}
       </Link>
 
       <button
@@ -39,7 +42,7 @@ export function UserProfileOwnerActions({
         ) : (
           <ToggleLeft className="h-4 w-4 text-on-surface-variant" />
         )}
-        {availabilityStatus === "available" ? "Disponível" : "Indisponível"}
+        {availabilityStatus === "available" ? t("profile.owner.available") : t("profile.owner.unavailable")}
       </button>
     </div>
   );

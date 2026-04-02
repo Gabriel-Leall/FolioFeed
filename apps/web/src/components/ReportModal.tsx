@@ -7,6 +7,7 @@ import { useUser } from "@clerk/nextjs";
 import { Button } from "@PeerFolio/ui/components/button";
 import { cn } from "@PeerFolio/ui/lib/utils";
 import { toast } from "sonner";
+import { useI18n } from "@/i18n/provider";
 
 const PORTFOLIO_REASONS = [
   { value: "SPAM", label: "SPAM", description: "URL que não é portfólio" },
@@ -33,6 +34,7 @@ interface ReportModalProps {
 }
 
 export function ReportModal({ targetId, targetType, open, onOpenChange }: ReportModalProps) {
+  const { t } = useI18n();
   const { isSignedIn } = useUser();
   const [selectedReason, setSelectedReason] = useState<string | null>(null);
   const [description, setDescription] = useState("");
@@ -44,13 +46,13 @@ export function ReportModal({ targetId, targetType, open, onOpenChange }: Report
 
   const handleSubmit = async () => {
     if (!isSignedIn) {
-      toast.error("Faça login para denunciar");
+      toast.error(t("modal.auth.description"));
       return;
     }
 
     if (!selectedReason) return;
     if (selectedReason === "OTHER" && !description.trim()) {
-      toast.error("Por favor, descreva o motivo");
+      toast.error(t("modal.report.detailsPlaceholder"));
       return;
     }
 
@@ -62,10 +64,10 @@ export function ReportModal({ targetId, targetType, open, onOpenChange }: Report
         reason: selectedReason as any,
         description: selectedReason === "OTHER" ? description : undefined,
       });
-      toast.success("Denúncia enviada. Obrigado!");
+      toast.success(t("modal.report.success"));
       handleClose();
     } catch (error: any) {
-      toast.error(error?.message || "Erro ao enviar denúncia");
+      toast.error(error?.message || t("modal.report.error"));
     } finally {
       setIsSubmitting(false);
     }
@@ -87,10 +89,10 @@ export function ReportModal({ targetId, targetType, open, onOpenChange }: Report
       />
       <div className="relative z-10 w-full max-w-md mx-4 p-6 rounded-2xl bg-[#131313] border border-white/10 shadow-2xl">
         <h2 className="font-serif text-xl text-white mb-2">
-          Denunciar {targetType === "portfolio" ? "Portfólio" : "Crítica"}
+          {t("modal.report.title")}
         </h2>
         <p className="text-white/60 text-sm mb-4">
-          Selecione o motivo da denúncia
+          {t("modal.report.reasonLabel")}
         </p>
 
         <div className="grid gap-2 max-h-[300px] overflow-y-auto mb-4">
@@ -119,7 +121,7 @@ export function ReportModal({ targetId, targetType, open, onOpenChange }: Report
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value.slice(0, 300))}
-              placeholder="Descreva o motivo (máx. 300 caracteres)"
+              placeholder={t("modal.report.detailsPlaceholder")}
               className="mt-2 w-full p-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-white/30 resize-none focus:outline-none focus:ring-2 focus:ring-primary"
               rows={3}
             />
@@ -132,14 +134,14 @@ export function ReportModal({ targetId, targetType, open, onOpenChange }: Report
             onClick={handleClose}
             className="border-white/10 text-white hover:bg-white/5"
           >
-            Cancelar
+            {t("modal.cancel")}
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={!selectedReason || isSubmitting}
             className="bg-primary hover:bg-secondary"
           >
-            {isSubmitting ? "Enviando..." : "Denunciar"}
+            {isSubmitting ? t("modal.report.submitting") : t("modal.report.submitButton")}
           </Button>
         </div>
       </div>

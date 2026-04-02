@@ -7,10 +7,12 @@ import { useEffect, useState, useRef } from "react";
 import { cn } from "@PeerFolio/ui/lib/utils";
 import { usePathname } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { useI18n } from "@/i18n/provider";
 
 export function FloatingSubmitButton() {
   const [isExpanded, setIsExpanded] = useState(true);
   const { isSignedIn } = useUser();
+  const { t } = useI18n();
   const pathname = usePathname();
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -73,7 +75,7 @@ export function FloatingSubmitButton() {
               isExpanded ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
             )}
           >
-            Submeter
+            {t("floatingSubmit.label")}
           </span>
           <div className={cn(
             "flex h-14 w-14 shrink-0 items-center justify-center transition-all duration-300",

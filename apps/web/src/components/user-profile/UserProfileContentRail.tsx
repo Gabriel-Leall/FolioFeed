@@ -1,5 +1,6 @@
 import { BookOpen, MessageSquare, Plus, Sparkles, Inbox } from "lucide-react";
 import Link from "next/link";
+import { useI18n } from "@/i18n/provider";
 
 import type { UserProfileTab, UserProfilePortfolio, UserProfileCritique, UserProfileReceivedCritique } from "./types";
 import { UserProfilePortfolioCardXL } from "./UserProfilePortfolioCardXL";
@@ -41,26 +42,28 @@ function ReceivedCritiquesTab({
   receivedCritiques: UserProfileReceivedCritique[];
   isOwner?: boolean;
 }) {
+  const { t } = useI18n();
+
   if (receivedCritiques.length === 0) {
     return (
       <EmptyState
         icon={<Inbox className="h-8 w-8" />}
-        title={isOwner ? "Nenhuma crítica recebida" : "Sem críticas recebidas"}
+        title={isOwner ? t("profile.content.noReceivedOwner") : t("profile.content.noReceivedUser")}
         message={
           isOwner
-            ? "Você ainda não recebeu nenhuma crítica nos seus portfólios. Compartilhe seus portfólios para receber feedback!"
-            : "Este usuário ainda não recebeu críticas nos seus portfólios."
+            ? t("profile.content.noReceivedOwnerDesc")
+            : t("profile.content.noReceivedUserDesc")
         }
         action={
           isOwner ? (
             <Link
               href="/"
-              className="inline-flex items-center gap-2 rounded-lg border border-outline-variant/40 px-4 py-2 text-sm font-medium"
-            >
-              <Sparkles className="h-4 w-4" />
-              Compartilhar portfólio
-            </Link>
-          ) : undefined
+                className="inline-flex items-center gap-2 rounded-lg border border-outline-variant/40 px-4 py-2 text-sm font-medium"
+              >
+                <Sparkles className="h-4 w-4" />
+                {t("profile.content.sharePortfolio")}
+              </Link>
+            ) : undefined
         }
       />
     );
@@ -88,10 +91,10 @@ function ReceivedCritiquesTab({
               )}
               <div>
                 <p className="font-medium text-white">
-                  {c.author.nickname || "Anônimo"}
+                  {c.author.nickname || t("profile.content.anonymous")}
                 </p>
                 <p className="text-xs text-white/50">
-                  Crítica em: {c.portfolio.title}
+                  {t("profile.content.critiqueOn")} {c.portfolio.title}
                 </p>
               </div>
             </div>
@@ -112,7 +115,7 @@ function ReceivedCritiquesTab({
             {c.feedback}
           </p>
           <div className="mt-3 flex items-center gap-4 text-xs text-white/40">
-            <span>{c.upvotes} upvotes</span>
+            <span>{c.upvotes} {t("profile.content.upvotes")}</span>
             <span>
               {new Date(c.createdAt).toLocaleDateString("pt-BR", {
                 day: "numeric",
@@ -134,16 +137,18 @@ export function UserProfileContentRail({
   receivedCritiques = [],
   isOwner,
 }: UserProfileContentRailProps) {
+  const { t } = useI18n();
+
   if (activeTab === "portfolios") {
     if (portfolios.length === 0) {
       return (
         <EmptyState
           icon={<BookOpen className="h-8 w-8" />}
-          title={isOwner ? "Nenhum portfólio ainda" : "Sem portfólios"}
+          title={isOwner ? t("profile.content.noPortfolioOwner") : t("profile.content.noPortfolioUser")}
           message={
             isOwner
-              ? "Você ainda não submeteu nenhum portfólio. Comece a mostrar seu trabalho."
-              : "Este usuário ainda não possui portfólios publicados."
+              ? t("profile.content.noPortfolioOwnerDesc")
+              : t("profile.content.noPortfolioUserDesc")
           }
           action={
             isOwner ? (
@@ -152,10 +157,10 @@ export function UserProfileContentRail({
                 className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
               >
                 <Plus className="h-4 w-4" />
-                Submeter portfólio
+                {t("profile.content.submitPortfolio")}
               </Link>
             ) : undefined
-          }
+        }
         />
       );
     }
@@ -174,11 +179,11 @@ export function UserProfileContentRail({
       return (
         <EmptyState
           icon={<MessageSquare className="h-8 w-8" />}
-          title={isOwner ? "Nenhuma crítica ainda" : "Sem críticas"}
+          title={isOwner ? t("profile.content.noCritiqueOwner") : t("profile.content.noCritiqueUser")}
           message={
             isOwner
-              ? "Você ainda não deixou nenhuma crítica. Explore o feed e ajude outros."
-              : "Este usuário ainda não deixou críticas em portfólios."
+              ? t("profile.content.noCritiqueOwnerDesc")
+              : t("profile.content.noCritiqueUserDesc")
           }
           action={
             isOwner ? (
@@ -187,10 +192,10 @@ export function UserProfileContentRail({
                 className="inline-flex items-center gap-2 rounded-lg border border-outline-variant/40 px-4 py-2 text-sm font-medium"
               >
                 <Sparkles className="h-4 w-4" />
-                Explorar feed
+                {t("profile.content.exploreFeed")}
               </Link>
             ) : undefined
-          }
+        }
         />
       );
     }

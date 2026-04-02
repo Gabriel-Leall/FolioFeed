@@ -1,5 +1,6 @@
 import { Globe, Github, Linkedin, Twitter } from "lucide-react";
 import type { ReactNode } from "react";
+import { useI18n } from "@/i18n/provider";
 
 import type { UserProfileSocialLinks } from "./types";
 import { getInitial } from "./utils";
@@ -61,6 +62,8 @@ export function UserProfileSidebar({
   onToggleAvailability,
   onAvatarChange,
 }: UserProfileSidebarProps) {
+  const { t } = useI18n();
+
   return (
     <aside className="rounded-xl border border-outline-variant/20 bg-surface-container p-6 md:p-8">
       <div className="flex items-center gap-6">
@@ -95,15 +98,15 @@ export function UserProfileSidebar({
 
       {bio ? (
         <div className="mt-6 rounded-lg border border-outline-variant/20 bg-surface-container-low p-4">
-          <h2 className="font-serif text-xl italic text-primary">The Curator&apos;s Note</h2>
+          <h2 className="font-serif text-xl italic text-primary">{t("profile.sidebar.curatorNote")}</h2>
           <p className="mt-3 text-sm leading-relaxed text-on-surface-variant">{bio}</p>
         </div>
       ) : null}
 
       <div className="mt-6 space-y-3">
-        <MetricRow label="Portfólios" value={portfoliosCount} />
-        <MetricRow label="Críticas dadas" value={critiquesGivenCount} />
-        <MetricRow label="Upvotes recebidos" value={upvotesReceivedCount} />
+        <MetricRow label={t("profile.sidebar.metrics.portfolios")} value={portfoliosCount} />
+        <MetricRow label={t("profile.sidebar.metrics.critiquesGiven")} value={critiquesGivenCount} />
+        <MetricRow label={t("profile.sidebar.metrics.upvotesReceived")} value={upvotesReceivedCount} />
       </div>
 
       <div className="mt-6 flex flex-wrap gap-2">

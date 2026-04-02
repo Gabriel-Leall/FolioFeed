@@ -19,6 +19,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { LanguageToggle } from "@/components/language-toggle";
+import { useI18n } from "@/i18n/provider";
 
 const ModeToggle = dynamic(
   () => import("./mode-toggle").then((mod) => mod.ModeToggle),
@@ -27,6 +29,7 @@ const ModeToggle = dynamic(
 import { getProfileRoute } from "@/lib/profile-route";
 
 export default function Header() {
+  const { t } = useI18n();
   const { isSignedIn, user } = useUser();
   const { signOut } = useClerk();
   const me = useQuery(api.users.queries.getMe, isSignedIn ? {} : "skip");
@@ -50,12 +53,12 @@ export default function Header() {
     if (unreadCount > 0 && unreadCount !== lastNotifiedCountRef.current) {
       toast.info(
         unreadCount === 1
-          ? "Voce tem 1 notificacao pendente"
-          : `Voce tem ${unreadCount} notificacoes pendentes`,
+          ? t("header.notifications.pending", { count: 1 })
+          : t("header.notifications.pending", { count: unreadCount }),
       );
       lastNotifiedCountRef.current = unreadCount;
     }
-  }, [isSignedIn, unreadCount]);
+  }, [isSignedIn, unreadCount, t]);
 
   const handleMarkAllAsRead = async () => {
     if (!unreadNotifications || unreadNotifications.length === 0) {
@@ -71,8 +74,8 @@ export default function Header() {
     if (result.updatedCount > 0) {
       toast.success(
         result.updatedCount === 1
-          ? "1 notificacao marcada como lida"
-          : `${result.updatedCount} notificacoes marcadas como lidas`,
+          ? t("header.notifications.markedRead", { count: 1 })
+          : t("header.notifications.markedRead", { count: result.updatedCount }),
       );
     }
   };
@@ -81,9 +84,9 @@ export default function Header() {
   const isLandingPage = pathname === "/";
 
   const landingLinks = [
-    { to: "#portfolios", label: "Destaques" },
-    { to: "#features", label: "Recursos" },
-    { to: "#cta", label: "Começar" },
+    { to: "#portfolios", label: t("header.nav.highlights") },
+    { to: "#features", label: t("header.nav.features") },
+    { to: "#cta", label: t("header.nav.start") },
   ] as const;
 
   const appLinks: { to: string; label: string }[] = [];
@@ -100,7 +103,7 @@ export default function Header() {
               <Button
                 variant="outline"
                 size="icon"
-                aria-label="Abrir notificacoes"
+                aria-label={t("header.notifications.open")}
                 className="border-white/10 bg-transparent hover:bg-white/5 text-white/80 transition-colors"
               />
             }
@@ -120,7 +123,7 @@ export default function Header() {
           >
             <DropdownMenuGroup>
               <DropdownMenuLabel className="font-serif text-lg text-white/90">
-                Notificacoes
+                {t("header.notifications.title")}
               </DropdownMenuLabel>
             </DropdownMenuGroup>
             <DropdownMenuSeparator className="bg-white/5" />
@@ -128,7 +131,7 @@ export default function Header() {
             <DropdownMenuGroup>
               {unreadCount === 0 ? (
                 <DropdownMenuItem disabled className="text-white/50">
-                  Nenhuma notificacao pendente
+                  {t("header.notifications.none")}
                 </DropdownMenuItem>
               ) : (
                 unreadNotifications?.map((notification) => (
@@ -155,7 +158,7 @@ export default function Header() {
                     onClick={handleMarkAllAsRead}
                     className="text-primary focus:bg-primary/10 focus:text-primary"
                   >
-                    Marcar todas como lidas
+                    {t("header.notifications.markAllRead")}
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
               </>
@@ -165,6 +168,7 @@ export default function Header() {
       )}
 
       <ModeToggle />
+      <LanguageToggle />
 
       {isSignedIn ? (
         <DropdownMenu>
@@ -175,7 +179,7 @@ export default function Header() {
                 <Avatar className="size-8">
                   <Avatar.Image
                     src={me?.avatarUrl ?? ""}
-                    alt={me?.nickname ?? "Avatar do usuário"}
+                    alt={me?.nickname ?? t("header.user.avatarAlt")}
                   />
                   <Avatar.Fallback className="bg-primary text-primary-foreground text-sm font-medium">
                     {me?.nickname?.charAt(0).toUpperCase() ??
@@ -194,7 +198,7 @@ export default function Header() {
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium leading-none">
-                    {me?.nickname ?? user?.fullName ?? "Usuário"}
+                    {me?.nickname ?? user?.fullName ?? t("header.user.default")}
                   </p>
                   <p className="text-xs leading-none text-on-surface-variant">
                     {user?.emailAddresses[0]?.emailAddress}
@@ -210,7 +214,7 @@ export default function Header() {
                   className="flex items-center w-full"
                 >
                   <User className="mr-2 h-4 w-4" />
-                  <span>Meu Perfil</span>
+                  <span>{t("header.user.profile")}</span>
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -221,7 +225,7 @@ export default function Header() {
                 className="cursor-pointer text-destructive focus:bg-destructive/15 focus:text-destructive"
               >
                 <LogOut className="mr-2 h-4 w-4" />
-                <span>Sair</span>
+                <span>{t("header.user.logout")}</span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
@@ -232,7 +236,7 @@ export default function Header() {
             size="sm"
             className="bg-primary hover:bg-secondary text-white border-0 shadow-[0_0_15px_rgba(132,94,247,0.2)] transition-all duration-300 hover:shadow-[0_0_25px_rgba(132,94,247,0.4)] px-6 rounded-md font-medium"
           >
-            Entrar
+            {t("header.auth.signIn")}
           </Button>
         </Link>
       )}
@@ -247,7 +251,7 @@ export default function Header() {
             href={logoHref}
             className="font-serif text-3xl font-bold tracking-tight text-white italic transition-transform hover:scale-[1.02]"
           >
-            PeerFolio
+            {t("brand.name")}
           </Link>
 
           <nav className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 gap-8 text-sm font-medium">
@@ -277,7 +281,7 @@ export default function Header() {
             href={logoHref}
             className="font-serif text-2xl font-bold tracking-tight text-white italic transition-transform hover:scale-[1.02]"
           >
-            PeerFolio
+            {t("brand.name")}
           </Link>
           <nav className="hidden md:flex gap-2 text-sm font-medium">
             {links.map(({ to, label }) => {

@@ -8,8 +8,10 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { getProfileRoute } from "@/lib/profile-route";
+import { useI18n } from "@/i18n/provider";
 
 export default function DashboardRoot() {
+  const { t } = useI18n();
   const { isSignedIn, isLoaded } = useUser();
   const router = useRouter();
   const me = useQuery(api.users.queries.getMe);
@@ -33,17 +35,15 @@ export default function DashboardRoot() {
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center text-center px-4 gap-4">
       <p className="text-4xl">👤</p>
-      <h1 className="text-2xl font-bold">Perfis de usuário</h1>
+      <h1 className="text-2xl font-bold">{t("dashboard.page.title")}</h1>
       <p className="text-muted-foreground max-w-sm">
-        Para ver o seu próprio perfil, faça login primeiro. Para visitar o perfil
-        de outro usuário, acesse o link diretamente a partir de um portfólio ou
-        crítica.
+        Para ver o seu proprio perfil, faca login primeiro. Para visitar o perfil de outro usuario, acesse o link diretamente a partir de um portfolio ou critica.
       </p>
       <Link
         href="/"
         className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 transition"
       >
-        Explorar portfólios
+        {t("landing.footer.explore")}
       </Link>
     </div>
   );

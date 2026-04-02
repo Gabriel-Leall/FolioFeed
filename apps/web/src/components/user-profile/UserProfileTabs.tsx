@@ -1,6 +1,7 @@
 import { BookOpen, MessageSquare, Inbox } from "lucide-react";
 
 import { cn } from "@PeerFolio/ui/lib/utils";
+import { useI18n } from "@/i18n/provider";
 
 import type { UserProfileTab } from "./types";
 
@@ -19,6 +20,8 @@ export function UserProfileTabs({
   critiquesCount,
   receivedCount = 0,
 }: UserProfileTabsProps) {
+  const { t } = useI18n();
+
   return (
     <div className="flex gap-6 px-1">
       <button
@@ -32,7 +35,7 @@ export function UserProfileTabs({
         )}
       >
         <BookOpen className="h-4 w-4" />
-        Portfólios
+        {t("profile.tabs.portfolios")}
         <span className="rounded-full bg-surface-container-low px-2 py-0.5 text-xs text-on-surface-variant">
           {portfoliosCount}
         </span>
@@ -52,7 +55,7 @@ export function UserProfileTabs({
         )}
       >
         <MessageSquare className="h-4 w-4" />
-        Críticas
+        {t("profile.tabs.critiques")}
         <span className="rounded-full bg-surface-container-low px-2 py-0.5 text-xs text-on-surface-variant">
           {critiquesCount}
         </span>
@@ -72,7 +75,7 @@ export function UserProfileTabs({
         )}
       >
         <Inbox className="h-4 w-4" />
-        Recebidas
+        {t("profile.tabs.received")}
         <span className="rounded-full bg-surface-container-low px-2 py-0.5 text-xs text-on-surface-variant">
           {receivedCount}
         </span>

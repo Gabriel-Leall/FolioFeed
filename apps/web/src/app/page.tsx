@@ -6,9 +6,12 @@ import { CulturalSpotlight } from "@/components/landing/cultural-spotlight";
 import { CtaSection } from "@/components/landing/home/cta-section";
 import { FeaturesSection } from "@/components/landing/home/features-section";
 import { LandingHero } from "@/components/landing/home/landing-hero";
+import { messages, DEFAULT_LOCALE } from "@/i18n/messages";
 
 export default async function Home() {
   const { userId } = await auth();
+  const t = (key: string) => messages[DEFAULT_LOCALE][key] ?? key;
+  const brandName = t("brand.name");
 
   if (userId) {
     redirect("/feed");
@@ -31,16 +34,16 @@ export default async function Home() {
           <div className="grid grid-cols-2 gap-10 md:grid-cols-4">
             <div className="col-span-2 md:col-span-1">
               <h3 className="mb-3 text-lg font-semibold tracking-tight">
-                PeerFolio
+                {brandName}
               </h3>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                Comunidade de desenvolvedores para feedback e crescimento mutuo.
+                {t("landing.footer.description")}
               </p>
             </div>
 
             <div>
               <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Plataforma
+                {t("landing.footer.platform")}
               </h4>
               <ul className="space-y-2.5 text-sm">
                 <li>
@@ -48,7 +51,7 @@ export default async function Home() {
                     href="/feed"
                     className="text-muted-foreground transition-colors duration-150 ease-out hover:text-primary"
                   >
-                    Explorar
+                    {t("landing.footer.explore")}
                   </Link>
                 </li>
                 <li>
@@ -56,7 +59,7 @@ export default async function Home() {
                     href="/submit"
                     className="text-muted-foreground transition-colors duration-150 ease-out hover:text-primary"
                   >
-                    Submeter
+                    {t("landing.footer.submit")}
                   </Link>
                 </li>
               </ul>
@@ -64,7 +67,7 @@ export default async function Home() {
 
             <div>
               <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Comunidade
+                {t("landing.footer.community")}
               </h4>
               <ul className="space-y-2.5 text-sm">
                 <li>
@@ -72,7 +75,7 @@ export default async function Home() {
                     href="/dashboard"
                     className="text-muted-foreground transition-colors duration-150 ease-out hover:text-primary"
                   >
-                    Dashboard
+                    {t("landing.footer.dashboard")}
                   </Link>
                 </li>
               </ul>
@@ -80,7 +83,7 @@ export default async function Home() {
 
             <div>
               <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Legal
+                {t("landing.footer.legal")}
               </h4>
               <ul className="space-y-2.5 text-sm">
                 <li>
@@ -88,7 +91,7 @@ export default async function Home() {
                     href={"/privacy" as any}
                     className="text-muted-foreground transition-colors duration-150 ease-out hover:text-primary"
                   >
-                    Privacidade
+                    {t("landing.footer.privacy")}
                   </Link>
                 </li>
                 <li>
@@ -96,7 +99,7 @@ export default async function Home() {
                     href={"/terms" as any}
                     className="text-muted-foreground transition-colors duration-150 ease-out hover:text-primary"
                   >
-                    Termos
+                    {t("landing.footer.terms")}
                   </Link>
                 </li>
               </ul>
@@ -104,8 +107,10 @@ export default async function Home() {
           </div>
 
           <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border/40 pt-8 text-sm text-muted-foreground sm:flex-row">
-            <p>&copy; 2026 PeerFolio. Todos os direitos reservados.</p>
-            <p className="text-xs">Feito pela comunidade para a comunidade</p>
+            <p>
+              &copy; 2026 {brandName}. {t("landing.footer.rights")}
+            </p>
+            <p className="text-xs">{t("landing.footer.byCommunity")}</p>
           </div>
         </div>
       </footer>

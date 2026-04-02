@@ -11,6 +11,7 @@ import { FeedCard, FeedCardSkeleton } from "@/components/feed/FeedCard";
 import type { FeedCardData } from "@/components/feed/FeedCard";
 import { PortfolioPreviewModal } from "@/components/feed/PortfolioPreviewModal";
 import { FeedbackModal } from "@/components/FeedbackModal";
+import { useI18n } from "@/i18n/provider";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -239,6 +240,7 @@ const MOCK_PORTFOLIOS: FeedCardData[] = [
 // ---------------------------------------------------------------------------
 
 export default function FeedPage() {
+  const { t } = useI18n();
   const [currentFilter, setCurrentFilter] = useState<FeedFilter>("latest");
   const [selectedArea, setSelectedArea] = useState<CategoryValue>(undefined);
   const [previewPortfolio, setPreviewPortfolio] = useState<FeedCardData | null>(
@@ -281,7 +283,7 @@ export default function FeedPage() {
             Moldando o Etéreo
           </p>
           <p className="font-sans text-sm sm:text-base text-white/50 leading-relaxed mb-8">
-            Tem ideias de como melhorar o PeerFolio? Deixe seu feedback.
+            {t("feed.feedbackPrompt")}
           </p>
           <Button
             variant="ghost"
@@ -289,7 +291,7 @@ export default function FeedPage() {
             onClick={() => setFeedbackModalOpen(true)}
             className="text-white/70 border border-white/10 hover:bg-white/5 hover:text-white hover:border-white/20 transition-all duration-150 ease-out rounded-lg px-6 active:scale-[0.97]"
           >
-            Contribuir feedback
+            {t("feed.contributeFeedback")}
           </Button>
         </div>
       </div>

@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { useI18n } from "@/i18n/provider";
 
 import CritiqueCard from "@/components/CritiqueCard";
 import { getProfileRoute } from "@/lib/profile-route";
@@ -45,6 +46,7 @@ function AverageRatingDisplay({
   average: number;
   count: number;
 }) {
+  const { t } = useI18n();
   const rounded = Math.round(average * 10) / 10;
   return (
     <div className="flex items-center gap-3">
@@ -54,9 +56,9 @@ function AverageRatingDisplay({
       </div>
       <div className="flex flex-col">
         <span className="text-sm font-medium">
-          {count} {count === 1 ? "crítica" : "críticas"}
+          {count} {count === 1 ? "critica" : "criticas"}
         </span>
-        <span className="text-xs text-muted-foreground">Avaliação média</span>
+        <span className="text-xs text-muted-foreground">{t("portfolio.detail.averageRating")}</span>
       </div>
     </div>
   );
@@ -76,7 +78,7 @@ function AuthorCard({
     primaryArea?: string;
   };
 }) {
-  const displayName = author.nickname ?? "Anônimo";
+  const displayName = author.nickname ?? "Anonimo";
   const profileHref = getProfileRoute({ nickname: author.nickname, _id: author._id });
 
   return (
@@ -112,6 +114,7 @@ function AuthorCard({
 // ---------------------------------------------------------------------------
 
 function ShareButton() {
+  const { t } = useI18n();
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
@@ -139,7 +142,7 @@ function ShareButton() {
       className="inline-flex items-center gap-2 rounded-lg border bg-card px-3 py-2 text-sm font-medium transition-all hover:bg-muted hover:border-[#a762b5]/30 cursor-pointer"
     >
       <Share2 className="h-4 w-4" />
-      {copied ? "Copiado!" : "Compartilhar"}
+      {copied ? t("portfolio.detail.copied") : t("portfolio.detail.shareButton")}
     </button>
   );
 }
@@ -149,6 +152,7 @@ function ShareButton() {
 // ---------------------------------------------------------------------------
 
 function VisitSiteButton({ url }: { url: string }) {
+  const { t } = useI18n();
   return (
     <a
       href={url}
@@ -157,7 +161,7 @@ function VisitSiteButton({ url }: { url: string }) {
       className="inline-flex items-center gap-2 rounded-lg bg-[#a762b5] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#a762b5]/90 hover:shadow-lg hover:shadow-[#a762b5]/25 cursor-pointer"
     >
       <ExternalLink className="h-4 w-4" />
-      Visitar Site
+      {t("portfolio.detail.visitSite")}
     </a>
   );
 }
@@ -183,6 +187,7 @@ function RefreshPreviewButton({
   portfolioId: Id<"portfolios">;
   isOwner: boolean;
 }) {
+  const { t } = useI18n();
   const refreshPreview = useMutation(api.portfolios.mutations.refreshPreview);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -198,13 +203,13 @@ function RefreshPreviewButton({
       if (result.status === "cooldown") {
         const retryAfter = result.retryAfterMs ?? 0;
         setMessage(
-          `Você poderá atualizar novamente em ${formatRetryTime(retryAfter)}.`,
+          t("portfolio.detail.refreshCooldown", { values: { time: formatRetryTime(retryAfter) } }),
         );
       } else {
-        setMessage("Preview em atualização. Recarregue em instantes.");
+        setMessage(t("portfolio.detail.refreshQueued"));
       }
     } catch {
-      setMessage("Não foi possível atualizar o preview agora.");
+      setMessage(t("portfolio.detail.refreshError"));
     } finally {
       setIsRefreshing(false);
     }
@@ -218,7 +223,7 @@ function RefreshPreviewButton({
         disabled={isRefreshing}
         className="inline-flex items-center gap-2 rounded-lg border bg-card px-3 py-2 text-sm font-medium transition-all hover:bg-muted hover:border-[#a762b5]/30 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {isRefreshing ? "Atualizando..." : "Atualizar preview"}
+        {isRefreshing ? t("portfolio.detail.refreshing") : t("portfolio.detail.refreshPreview")}
       </button>
       {message && <p className="text-xs text-muted-foreground">{message}</p>}
     </div>
@@ -240,6 +245,7 @@ function PreviewSection({
   url: string;
   normalizedUrl: string;
 }) {
+  const { t } = useI18n();
   const [isHovered, setIsHovered] = useState(false);
 
   if (!previewImageUrl) {
@@ -257,7 +263,7 @@ function PreviewSection({
           </div>
           <div className="text-center space-y-1">
             <p className="text-sm font-medium break-all px-4">{normalizedUrl}</p>
-            <p className="text-xs text-muted-foreground">Clique para abrir o site</p>
+            <p className="text-xs text-muted-foreground">{t("portfolio.detail.clickToOpen")}</p>
           </div>
         </a>
       </div>
@@ -306,7 +312,7 @@ function PreviewSection({
       {/* Screenshot badge */}
       <div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-full bg-background/90 px-2.5 py-1 text-xs font-medium shadow-sm backdrop-blur-sm">
         <Camera className="h-3 w-3" />
-        Screenshot
+        {t("portfolio.detail.screenshot")}
       </div>
 
       {/* Hover overlay hint */}
@@ -317,7 +323,7 @@ function PreviewSection({
       >
         <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-black">
           <ExternalLink className="h-4 w-4" />
-          Ver site
+          {t("portfolio.detail.openSite")}
         </div>
       </div>
     </div>
@@ -329,13 +335,14 @@ function PreviewSection({
 // ---------------------------------------------------------------------------
 
 function StackDisplay({ stack }: { stack: string[] }) {
+  const { t } = useI18n();
   if (stack.length === 0) return null;
 
   return (
     <div className="space-y-3">
       <h3 className="flex items-center gap-2 text-sm font-semibold">
         <TrendingUp className="h-4 w-4 text-[#a762b5]" />
-        Stack Tecnológicas
+        {t("portfolio.detail.stackTech")}
       </h3>
       <div className="flex flex-wrap gap-2">
         {stack.map((tag) => (
@@ -356,6 +363,7 @@ function StackDisplay({ stack }: { stack: string[] }) {
 // ---------------------------------------------------------------------------
 
 function FeedbackRequestSection({ goalsContext }: { goalsContext: string }) {
+  const { t } = useI18n();
   return (
     <div className="relative overflow-hidden rounded-xl border border-[#a762b5]/20 bg-linear-to-br from-[#a762b5]/5 to-[#a762b5]/10 p-5">
       <div className="absolute top-0 right-0 p-2 opacity-10">
@@ -364,7 +372,7 @@ function FeedbackRequestSection({ goalsContext }: { goalsContext: string }) {
       <div className="relative">
         <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-[#a762b5]">
           <Sparkles className="h-4 w-4" />
-          SOLICITAÇÃO DE FEEDBACK
+          {t("portfolio.detail.feedbackRequest")}
         </h3>
         <p className="text-sm leading-relaxed text-foreground/80">{goalsContext}</p>
       </div>
@@ -385,6 +393,7 @@ function CritiquesSection({
   isOwner: boolean;
   critiqueFormRef: React.RefObject<HTMLElement | null>;
 }) {
+  const { t } = useI18n();
   const critiques = useQuery(api.portfolios.queries.getCritiques, { portfolioId });
 
   if (critiques === undefined) {
@@ -406,13 +415,13 @@ function CritiquesSection({
         <div className="space-y-2">
           <p className="text-sm font-medium">
             {isOwner
-              ? "Nenhuma crítica ainda. Compartilhe para receber feedback!"
-              : "Este portfólio ainda não tem críticas."}
+              ? t("portfolio.detail.noCritiquesOwner")
+              : t("portfolio.detail.noCritiquesUser")}
           </p>
           <p className="text-xs text-muted-foreground">
             {isOwner
-              ? "Sua primeira crítica aparecerá aqui."
-              : "Seja o primeiro a deixar uma crítica construtiva."}
+              ? t("portfolio.detail.firstCritiqueOwner")
+              : t("portfolio.detail.firstCritiqueUser")}
           </p>
         </div>
         {!isOwner && (
@@ -429,7 +438,7 @@ function CritiquesSection({
             className="inline-flex items-center gap-2 rounded-lg bg-[#a762b5] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#a762b5]/90 cursor-pointer"
           >
             <Sparkles className="h-4 w-4" />
-            Deixar primeira crítica
+            {t("portfolio.detail.leaveFirstCritique")}
           </button>
         )}
         {isOwner && (
@@ -477,6 +486,7 @@ function RelatedPortfoliosSection({
   currentPortfolioId: Id<"portfolios">;
   area: string | undefined;
 }) {
+  const { t } = useI18n();
   const relatedPortfolios = useQuery(api.portfolios.queries.list, {
     filter: "latest",
     area: area as "Frontend" | "Backend" | "Fullstack" | "UI/UX" | "Mobile" | "Other" | undefined,
@@ -501,7 +511,7 @@ function RelatedPortfoliosSection({
     <div className="space-y-4">
       <h3 className="flex items-center gap-2 text-sm font-semibold">
         <ThumbsUp className="h-4 w-4 text-[#a762b5]" />
-        Você também pode gostar
+        {t("portfolio.detail.youMayAlsoLike")}
       </h3>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((portfolio) => (
@@ -553,6 +563,7 @@ type PortfolioDetailClientProps = {
 };
 
 export default function PortfolioDetailClient({ portfolioId }: PortfolioDetailClientProps) {
+  const { t } = useI18n();
   const me = useQuery(api.users.queries.getMe);
   const portfolio = useQuery(api.portfolios.queries.getById, { portfolioId });
   const critiqueFormRef = useRef<HTMLElement | null>(null);
@@ -577,15 +588,15 @@ export default function PortfolioDetailClient({ portfolioId }: PortfolioDetailCl
   if (portfolio === null) {
     return (
       <div className="mx-auto w-full max-w-2xl px-4 py-16 text-center">
-        <h1 className="mb-3 text-2xl font-semibold">Portfólio não encontrado</h1>
+        <h1 className="mb-3 text-2xl font-semibold">{t("portfolio.detail.notFound")}</h1>
         <p className="mb-6 text-sm text-muted-foreground">
-          Este portfólio não existe ou foi removido pelo autor.
+          {t("portfolio.detail.notFoundDesc")}
         </p>
         <Link
           href="/"
           className="inline-flex h-9 items-center rounded-lg border px-4 text-sm font-medium transition hover:bg-muted"
         >
-          Voltar ao feed
+          {t("portfolio.detail.backToFeed")}
         </Link>
       </div>
     );
@@ -686,11 +697,11 @@ export default function PortfolioDetailClient({ portfolioId }: PortfolioDetailCl
           >
             <div className="mb-4 flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-[#a762b5]" />
-              <h2 className="text-base font-semibold">Deixe sua Crítica</h2>
+              <h2 className="text-base font-semibold">{t("portfolio.detail.leaveYourCritique")}</h2>
             </div>
             {!isOwner && (
               <p className="mb-4 text-xs text-muted-foreground">
-                Ajude este desenvolvedor a melhorar com seu feedback construtivo.
+                {t("portfolio.detail.helpDeveloper")}
               </p>
             )}
             <CritiqueForm
@@ -703,12 +714,10 @@ export default function PortfolioDetailClient({ portfolioId }: PortfolioDetailCl
           {/* Community Critiques */}
           <div className="rounded-xl border bg-card p-5">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="flex items-center gap-2 text-base font-semibold">
-                <MessageSquare className="h-5 w-5 text-[#a762b5]" />
-                {portfolio.critiqueCount > 0
-                  ? `Críticas da Comunidade`
-                  : "Críticas da Comunidade"}
-              </h2>
+                <h2 className="flex items-center gap-2 text-base font-semibold">
+                  <MessageSquare className="h-5 w-5 text-[#a762b5]" />
+                  {t("portfolio.detail.communityCritiques")}
+                </h2>
               {portfolio.critiqueCount > 0 && (
                 <span className="rounded-full bg-[#a762b5]/10 px-2.5 py-0.5 text-xs font-medium text-[#a762b5]">
                   {portfolio.critiqueCount}

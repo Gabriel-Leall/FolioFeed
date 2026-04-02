@@ -28,8 +28,8 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_APP_URL ?? "https://peerfolio-eight.vercel.app",
   ),
   title: {
-    default: "PeerFolio",
-    template: "%s | PeerFolio",
+    default: "FolioFeed",
+    template: "%s | FolioFeed",
   },
   description: "Comunidade para compartilhar portfolios e evoluir com feedback.",
 };
@@ -40,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="pt-BR" suppressHydrationWarning>
       <body className={`${newsreader.variable} ${manrope.variable} ${spaceGrotesk.variable} antialiased bg-surface text-on-surface`}>
         <ClerkProvider>
           <Providers>

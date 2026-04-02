@@ -7,8 +7,10 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@PeerFolio/ui/components/button";
 
 import { FlowButton } from "@/components/flow-button";
+import { useI18n } from "@/i18n/provider";
 
 export function ProfileNotFoundState() {
+  const { t } = useI18n();
   const router = useRouter();
 
   return (
@@ -33,11 +35,11 @@ export function ProfileNotFoundState() {
         </h1>
 
         <h2 className="max-w-3xl font-serif text-4xl italic leading-tight text-on-surface sm:text-6xl">
-          ops... Acho que encontrou um dos nossos exemplos
+          {t("profile.notFound.title")}
         </h2>
 
         <p className="mt-6 max-w-2xl text-lg text-on-surface-variant">
-          o usuário nao existe, mas caso conheça avise ele para participar do peerfolio.
+          {t("profile.notFound.description")}
         </p>
 
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
@@ -55,16 +57,16 @@ export function ProfileNotFoundState() {
             className="h-12 rounded-full border border-white/10 bg-[#131313]/85 px-7 text-sm font-medium text-white transition-all duration-300 hover:border-primary/60 hover:bg-[#1b1b1f] hover:text-[#e9dcff]"
           >
             <ArrowLeft className="h-4 w-4" />
-            Go Back
+            {t("common.back")}
           </Button>
 
           <Link href={"/sign-up" as any}>
-            <FlowButton text="Join Peerfolio" />
+            <FlowButton text={t("landing.hero.cta.primary")} />
           </Link>
         </div>
 
         <p className="mt-8 text-[11px] uppercase tracking-[0.35em] text-on-surface-variant/70">
-          Curated in the Void
+          {t("profile.notFound.void")}
         </p>
       </div>
     </section>

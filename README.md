@@ -1,6 +1,6 @@
-# PeerFolio
+# FolioFeed
 
-PeerFolio e uma plataforma para desenvolvedores compartilharem portfolios, receberem criticas construtivas e evoluirem em comunidade.
+FolioFeed e uma plataforma para desenvolvedores compartilharem portfolios, receberem criticas construtivas e evoluirem em comunidade.
 
 Este repositorio usa monorepo com Turborepo, frontend em Next.js e backend em Convex.
 
@@ -61,7 +61,7 @@ App web: `http://localhost:3001`
 ## Estrutura do projeto
 
 ```text
-PeerFolio/
+FolioFeed/
 ├── apps/
 │   └── web/                 # Next.js app
 ├── packages/

@@ -21,6 +21,7 @@ import { useEffect, useRef, useState } from "react";
 
 import AuthModal from "@/components/AuthModal";
 import { getProfileRoute } from "@/lib/profile-route";
+import { useI18n } from "@/i18n/provider";
 import type { FeedCardData } from "./FeedCard";
 
 // ---------------------------------------------------------------------------
@@ -46,18 +47,19 @@ function StarPicker({
   onChange: (v: number) => void;
   disabled?: boolean;
 }) {
+  const { t } = useI18n();
   const [hovered, setHovered] = useState(0);
   const active = hovered || value;
 
   return (
-    <div className="flex items-center gap-1" role="radiogroup" aria-label="Avaliação de 1 a 5 estrelas">
+    <div className="flex items-center gap-1" role="radiogroup" aria-label={t("portfolio.form.ratingHelper")}>
       {[1, 2, 3, 4, 5].map((star) => (
         <button
           key={star}
           type="button"
           role="radio"
           aria-checked={value === star}
-          aria-label={`${star} estrela${star !== 1 ? "s" : ""}`}
+          aria-label={`${star}`}
           disabled={disabled}
           onClick={() => onChange(star)}
           onMouseEnter={() => setHovered(star)}
@@ -101,14 +103,15 @@ function CritiqueCard({
   };
   portfolioAuthorId: string;
 }) {
+  const { t } = useI18n();
   const { isSignedIn } = useUser();
   const upvote = useMutation(api.critiques.mutations.upvote);
   const [localUpvotes, setLocalUpvotes] = useState(critique.upvotes);
   const [isUpvoting, setIsUpvoting] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
 
-  const name = critique.author.nickname ?? "Anônimo";
-  const timeAgo = formatTimeAgo(critique.createdAt);
+  const name = critique.author.nickname ?? t("profile.content.anonymous");
+  const timeAgo = formatTimeAgo(critique.createdAt, t);
   const isPortfolioOwner = critique.author._id === portfolioAuthorId;
 
   const handleUpvote = async () => {
@@ -149,7 +152,7 @@ function CritiqueCard({
                 {name}
                 {isPortfolioOwner && (
                   <span className="ml-1.5 inline-flex items-center rounded-sm bg-primary/15 px-1.5 py-0.5 text-[10px] font-medium tracking-wide text-primary">
-                    Autor
+                    {t("feed.modal.author")}
                   </span>
                 )}
               </span>
@@ -194,8 +197,8 @@ function CritiqueCard({
       <AuthModal
         open={showAuth}
         onOpenChange={setShowAuth}
-        title="Entre para votar"
-        description="Faça login para dar upvote em críticas."
+        title={t("feed.modal.signInToVote")}
+        description={t("feed.modal.signInToVoteDesc")}
         redirectTo="/"
       />
     </>
@@ -210,6 +213,7 @@ function CritiqueForm({
   portfolioId: string;
   onSuccess: () => void;
 }) {
+  const { t } = useI18n();
   const { isSignedIn } = useUser();
   const submitCritique = useMutation(api.critiques.mutations.submit);
   const [showAuth, setShowAuth] = useState(false);
@@ -239,17 +243,17 @@ function CritiqueForm({
       setForm({ rating: 0, feedback: "" });
       onSuccess();
     } catch (err: any) {
-      const msg = err?.data ?? err?.message ?? "Erro desconhecido";
+      const msg = err?.data ?? err?.message ?? t("feed.modal.unknownError");
       if (msg === "SELF_CRITIQUE_NOT_ALLOWED") {
-        setError("Você não pode criticar o seu próprio portfólio.");
+        setError(t("feed.modal.selfCritique"));
       } else if (msg === "ALREADY_CRITIQUED") {
-        setError("Você já enviou uma crítica para este portfólio.");
+        setError(t("feed.modal.alreadyCritiqued"));
       } else if (msg === "RATE_LIMIT_EXCEEDED") {
-        setError("Você atingiu o limite de 5 críticas por hora. Tente mais tarde.");
+        setError(t("feed.modal.rateLimit"));
       } else if (msg === "FEEDBACK_TOO_SHORT") {
-        setError("O feedback deve ter pelo menos 20 caracteres.");
+        setError(t("feed.modal.critiqueMin"));
       } else {
-        setError("Ocorreu um erro ao enviar a crítica. Tente novamente.");
+        setError(t("feed.modal.critiqueError"));
       }
     } finally {
       setIsSubmitting(false);
@@ -268,7 +272,7 @@ function CritiqueForm({
       >
         <div className="flex items-center justify-between">
           <h3 className="font-sans text-sm font-semibold text-foreground">
-            Deixar uma crítica
+            {t("feed.modal.leaveCritique")}
           </h3>
           <StarPicker
             value={form.rating}
@@ -284,8 +288,8 @@ function CritiqueForm({
           disabled={isSubmitting}
           rows={3}
           maxLength={1000}
-          placeholder="Descreva o que você observou: pontos fortes, áreas a melhorar, impacto visual…"
-          aria-label="Texto da crítica"
+          placeholder={t("feed.modal.critiquePlaceholder")}
+          aria-label={t("feed.modal.critiqueAria")}
           className="w-full resize-none rounded-md border border-border/10 bg-surface-container-high px-3 py-2.5 font-sans text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-primary/40 focus:outline-none focus:ring-1 focus:ring-primary/30 disabled:opacity-50"
         />
 
@@ -300,7 +304,7 @@ function CritiqueForm({
                   : "text-muted-foreground/40"
             )}
           >
-            {feedbackLen > 0 ? `${feedbackLen}/1000 chars` : "Mín. 20 caracteres"}
+            {feedbackLen > 0 ? `${feedbackLen}/1000` : t("feed.modal.critiqueMin")}
           </span>
 
           {error && (
@@ -332,8 +336,8 @@ function CritiqueForm({
       <AuthModal
         open={showAuth}
         onOpenChange={setShowAuth}
-        title="Entre para criticar"
-        description="Faça login para deixar uma crítica e ajudar a comunidade."
+        title={t("feed.modal.signInToCritique")}
+        description={t("feed.modal.signInToCritiqueDesc")}
         redirectTo="/"
       />
     </>
@@ -353,6 +357,7 @@ export function PortfolioPreviewModal({
   portfolio,
   onClose,
 }: PortfolioPreviewModalProps) {
+  const { t } = useI18n();
   // Fetch live critiques — skip for mock portfolios (IDs starting with "mock_")
   const isMock = portfolio?._id?.toString().startsWith("mock_") ?? false;
   const critiques = useQuery(
@@ -381,7 +386,7 @@ export function PortfolioPreviewModal({
 
   if (!portfolio) return null;
 
-  const displayName = portfolio.author.nickname ?? "Anônimo";
+  const displayName = portfolio.author.nickname ?? t("profile.content.anonymous");
   const authorProfileHref = getProfileRoute({
     nickname: portfolio.author.nickname,
     _id: portfolio.authorId,
@@ -417,7 +422,7 @@ export function PortfolioPreviewModal({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Fechar pré-visualização"
+            aria-label={t("common.close")}
             className="absolute right-4 top-4 z-10 flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border border-border/10 bg-background/70 text-muted-foreground backdrop-blur-sm transition-colors hover:border-border/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
           >
             <X className="h-4 w-4" />
@@ -531,14 +536,14 @@ export function PortfolioPreviewModal({
                   className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                 >
                   <ExternalLink className="h-4 w-4" />
-                  Visitar Site
+                  {t("portfolio.detail.visitSite")}
                 </a>
                 <Link
                   href={authorProfileHref as any}
                   className="flex cursor-pointer items-center justify-center gap-2 rounded-md border border-border/15 px-5 py-3 text-sm font-medium text-muted-foreground transition-colors hover:border-border/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                 >
                   <User className="h-4 w-4" />
-                  Ver Perfil do Autor
+                  {t("portfolio.detail.viewAuthorProfile")}
                 </Link>
               </div>
 
@@ -600,17 +605,19 @@ export function PortfolioPreviewModal({
 // Utils
 // ---------------------------------------------------------------------------
 
-function formatTimeAgo(timestamp: number): string {
+function formatTimeAgo(timestamp: number, t: (key: string, options?: { values?: Record<string, string | number>; count?: number }) => string): string {
   const diff = Date.now() - timestamp;
   const mins = Math.floor(diff / 60_000);
-  if (mins < 1) return "agora mesmo";
-  if (mins < 60) return `há ${mins} min`;
+  if (mins < 1) return t("feed.time.now");
+  if (mins < 60) return t("feed.time.min", { values: { count: mins } });
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `há ${hours}h`;
+  if (hours < 24) return t("feed.time.hour", { values: { count: hours } });
   const days = Math.floor(hours / 24);
-  if (days < 7) return `há ${days}d`;
+  if (days < 7) return t("feed.time.day", { values: { count: days } });
   const weeks = Math.floor(days / 7);
-  if (weeks < 5) return `há ${weeks} sem`;
+  if (weeks < 5) return t("feed.time.week", { values: { count: weeks } });
   const months = Math.floor(days / 30);
-  return `há ${months} mes${months !== 1 ? "es" : ""}`;
+  return months === 1
+    ? t("feed.time.month", { values: { count: months } })
+    : t("feed.time.monthPlural", { values: { count: months } });
 }

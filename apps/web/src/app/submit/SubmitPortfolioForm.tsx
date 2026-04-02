@@ -8,6 +8,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { AREA_VALUES, type Area } from "@PeerFolio/backend/convex/lib/constants";
 import { CharacterCounter } from "@/components/CharacterCounter";
+import { useI18n } from "@/i18n/provider";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -41,6 +42,7 @@ const PREDEFINED_TAGS = [
 // ---------------------------------------------------------------------------
 
 export default function SubmitPortfolioForm() {
+  const { t } = useI18n();
   const { isLoaded, isSignedIn } = useUser();
   const router = useRouter();
 
@@ -93,21 +95,21 @@ export default function SubmitPortfolioForm() {
             setErrors((prev) => ({ ...prev, url: undefined }));
           } else {
             setUrlValidation("invalid");
-            setErrors((prev) => ({
-              ...prev,
-              url: "URL não alcançável. Verifique se o endereço está correto e acessível.",
-            }));
+              setErrors((prev) => ({
+                ...prev,
+                url: t("submit.form.urlNotReachable"),
+              }));
+            }
+          } catch (err: unknown) {
+            setUrlValidation("invalid");
+            const msg =
+              err instanceof Error && err.message.includes("INVALID_URL")
+                ? t("submit.form.invalidUrl")
+                : err instanceof Error && err.message.includes("UNSAFE_URL")
+                  ? t("submit.form.urlUnsafe")
+                  : t("submit.form.urlError");
+            setErrors((prev) => ({ ...prev, url: msg }));
           }
-        } catch (err: unknown) {
-          setUrlValidation("invalid");
-          const msg =
-            err instanceof Error && err.message.includes("INVALID_URL")
-              ? "URL inválida."
-              : err instanceof Error && err.message.includes("UNSAFE_URL")
-                ? "URL não permitida por segurança."
-                : "Erro ao validar a URL. Tente novamente.";
-          setErrors((prev) => ({ ...prev, url: msg }));
-        }
       }, 800);
     },
     [validateUrlAction],
@@ -118,7 +120,7 @@ export default function SubmitPortfolioForm() {
     setStackTags((prev) => {
       if (prev.includes(tag)) return prev.filter((t) => t !== tag);
       if (prev.length >= 8) {
-        setErrors((e) => ({ ...e, stack: "Máximo de 8 tags." }));
+        setErrors((e) => ({ ...e, stack: t("submit.form.maxTags") }));
         return prev;
       }
       return [...prev, tag];
@@ -130,7 +132,7 @@ export default function SubmitPortfolioForm() {
     const tag = customTagInput.trim();
     if (!tag) return;
     if (stackTags.length >= 8) {
-      setErrors((e) => ({ ...e, stack: "Máximo de 8 tags." }));
+      setErrors((e) => ({ ...e, stack: t("submit.form.maxTags") }));
       return;
     }
     if (!stackTags.includes(tag)) {
@@ -146,18 +148,18 @@ export default function SubmitPortfolioForm() {
     const newErrors: FieldError = {};
 
     if (urlValidation !== "valid") {
-      newErrors.url = "Por favor, insira uma URL válida e alcançável.";
+      newErrors.url = t("submit.form.invalidUrl");
     }
     if (title.trim().length === 0) {
-      newErrors.title = "Título é obrigatório.";
+      newErrors.title = t("submit.form.titleRequired");
     } else if (title.length > 80) {
-      newErrors.title = "Título pode ter no máximo 80 caracteres.";
+      newErrors.title = t("submit.form.titleMax");
     }
     if (!area) {
-      newErrors.area = "Área é obrigatória.";
+      newErrors.area = t("submit.form.areaRequired");
     }
     if (goalsContext.length > 300) {
-      newErrors.goalsContext = "Pedido de feedback pode ter no máximo 300 caracteres.";
+      newErrors.goalsContext = t("submit.form.goalsContextMax");
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -178,7 +180,7 @@ export default function SubmitPortfolioForm() {
       });
 
       if (result.claimed) {
-        alert("Parabens por reivindiciar seu portfolio, se ele foi seedado é porque o autor do projeto achou seu projeto incrivel, me siga nas rede sociais");
+        alert(t("submit.form.claimSuccess"));
       }
 
       router.push(`/portfolio/${result.portfolioId}`);
@@ -187,11 +189,11 @@ export default function SubmitPortfolioForm() {
         err instanceof Error ? err.message : String(err);
 
       if (errMsg.includes("DUPLICATE_URL")) {
-        setErrors({ url: "Esse portfólio já foi submetido. Confira o feed." });
+        setErrors({ url: t("submit.form.duplicateUrl") });
       } else if (errMsg.includes("UNAUTHENTICATED")) {
-        setErrors({ general: "Você precisa estar logado para submeter um portfólio." });
+        setErrors({ general: t("submit.form.unauthenticated") });
       } else {
-        setErrors({ general: "Erro ao submeter portfólio. Tente novamente." });
+        setErrors({ general: t("submit.form.error") });
       }
     } finally {
       setIsSubmitting(false);
@@ -221,7 +223,7 @@ export default function SubmitPortfolioForm() {
       {/* URL */}
       <div className="space-y-1.5">
         <label htmlFor="portfolio-url" className="block text-sm font-medium">
-          URL do Portfólio <span aria-hidden="true" className="text-destructive">*</span>
+          {t("submit.form.urlLabel")} <span aria-hidden="true" className="text-destructive">*</span>
         </label>
         <div className="relative">
           <input
@@ -230,7 +232,7 @@ export default function SubmitPortfolioForm() {
             name="url"
             value={url}
             onChange={(e) => handleUrlChange(e.target.value)}
-            placeholder="https://meuportfolio.dev"
+            placeholder={t("submit.form.urlPlaceholder")}
             autoComplete="url"
             aria-describedby={errors.url ? "url-error" : undefined}
             aria-invalid={errors.url ? "true" : undefined}
@@ -238,7 +240,7 @@ export default function SubmitPortfolioForm() {
           />
           {urlValidation === "validating" && (
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-              Verificando…
+              {t("submit.form.urlValidating")}
             </span>
           )}
           {urlValidation === "valid" && (
@@ -252,7 +254,7 @@ export default function SubmitPortfolioForm() {
         )}
         {urlValidation === "valid" && normalizedUrl && normalizedUrl !== url && (
           <p className="text-xs text-muted-foreground">
-            URL normalizada: <span className="font-mono">{normalizedUrl}</span>
+            {t("submit.form.urlNormalized")} <span className="font-mono">{normalizedUrl}</span>
           </p>
         )}
       </div>
@@ -261,7 +263,7 @@ export default function SubmitPortfolioForm() {
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <label htmlFor="portfolio-title" className="block text-sm font-medium">
-            Título <span aria-hidden="true" className="text-destructive">*</span>
+            {t("submit.form.titleLabel")} <span aria-hidden="true" className="text-destructive">*</span>
           </label>
           <CharacterCounter current={title.length} max={80} />
         </div>
@@ -274,7 +276,7 @@ export default function SubmitPortfolioForm() {
             setTitle(e.target.value);
             setErrors((prev) => ({ ...prev, title: undefined }));
           }}
-          placeholder="Meu portfólio de desenvolvimento web"
+          placeholder={t("submit.form.titlePlaceholder")}
           maxLength={80}
           aria-describedby={errors.title ? "title-error" : undefined}
           aria-invalid={errors.title ? "true" : undefined}
@@ -290,7 +292,7 @@ export default function SubmitPortfolioForm() {
       {/* Area */}
       <div className="space-y-1.5">
         <label htmlFor="portfolio-area" className="block text-sm font-medium">
-          Área <span aria-hidden="true" className="text-destructive">*</span>
+          {t("submit.form.areaLabel")} <span aria-hidden="true" className="text-destructive">*</span>
         </label>
         <select
           id="portfolio-area"
@@ -304,7 +306,7 @@ export default function SubmitPortfolioForm() {
           aria-invalid={errors.area ? "true" : undefined}
           className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none transition focus:ring-2"
         >
-          <option value="">Selecione uma área…</option>
+          <option value="">{t("submit.form.areaPlaceholder")}</option>
           {AREA_VALUES.map((a) => (
             <option key={a} value={a}>
               {a}
@@ -322,7 +324,7 @@ export default function SubmitPortfolioForm() {
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="block text-sm font-medium" id="stack-label">
-            Stack <span className="text-muted-foreground font-normal">(máx. 8)</span>
+            {t("submit.form.stackLabel")} <span className="text-muted-foreground font-normal">{t("submit.form.stackMax")}</span>
           </span>
           {stackTags.length > 0 && (
             <span className="text-xs text-muted-foreground">{stackTags.length}/8</span>
@@ -362,8 +364,8 @@ export default function SubmitPortfolioForm() {
                 addCustomTag();
               }
             }}
-            placeholder="Tag personalizada…"
-            aria-label="Adicionar tag personalizada"
+            placeholder={t("submit.form.customTagPlaceholder")}
+            aria-label={t("submit.form.customTagPlaceholder")}
             className="flex-1 rounded-md border bg-background px-3 py-1.5 text-sm outline-none transition placeholder:text-muted-foreground focus:ring-2"
           />
           <button
@@ -372,7 +374,7 @@ export default function SubmitPortfolioForm() {
             disabled={!customTagInput.trim() || stackTags.length >= 8}
             className="rounded-md border px-3 py-1.5 text-sm transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Adicionar
+            {t("submit.form.addTag")}
           </button>
         </div>
 
@@ -388,7 +390,7 @@ export default function SubmitPortfolioForm() {
                 <button
                   type="button"
                   onClick={() => setStackTags((prev) => prev.filter((t) => t !== tag))}
-                  aria-label={`Remover tag ${tag}`}
+                  aria-label={`${t("submit.form.removeTag")} ${tag}`}
                   className="text-muted-foreground hover:text-foreground"
                 >
                   ×
@@ -409,8 +411,7 @@ export default function SubmitPortfolioForm() {
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <label htmlFor="goals-context" className="block text-sm font-medium">
-            Pedido de Feedback{" "}
-            <span className="text-muted-foreground font-normal">(opcional)</span>
+            {t("submit.form.goalsContextLabel")} <span className="text-muted-foreground font-normal">{t("submit.form.goalsContextOptional")}</span>
           </label>
           <CharacterCounter current={goalsContext.length} max={300} />
         </div>
@@ -422,7 +423,7 @@ export default function SubmitPortfolioForm() {
             setGoalsContext(e.target.value);
             setErrors((prev) => ({ ...prev, goalsContext: undefined }));
           }}
-          placeholder="Em que aspectos você quer receber feedback? Ex: UX, performance, acessibilidade…"
+          placeholder={t("submit.form.goalsContextPlaceholder")}
           maxLength={300}
           rows={3}
           aria-describedby={errors.goalsContext ? "goals-error" : undefined}
@@ -445,8 +446,8 @@ export default function SubmitPortfolioForm() {
         {isSubmitting
           ? "Submetendo…"
           : urlValidation === "validating"
-            ? "Validando URL…"
-            : "Submeter Portfólio"}
+            ? t("submit.form.validating")
+            : t("submit.form.submitButton")}
       </button>
     </form>
   );

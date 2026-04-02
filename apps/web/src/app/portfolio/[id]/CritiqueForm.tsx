@@ -8,6 +8,7 @@ import { useState } from "react";
 
 import AuthModal from "@/components/AuthModal";
 import { CharacterCounter } from "@/components/CharacterCounter";
+import { useI18n } from "@/i18n/provider";
 
 // ---------------------------------------------------------------------------
 // Star Rating sub-component
@@ -22,10 +23,11 @@ function StarRating({
   onChange: (v: number) => void;
   disabled?: boolean;
 }) {
+  const { t } = useI18n();
   const [hovered, setHovered] = useState(0);
 
   return (
-    <div className="flex gap-1" role="radiogroup" aria-label="Avaliação (1 a 5 estrelas)">
+    <div className="flex gap-1" role="radiogroup" aria-label={t("portfolio.form.ratingHelper")}>
       {[1, 2, 3, 4, 5].map((star) => (
         <button
           key={star}
@@ -59,6 +61,7 @@ type CritiqueFormProps = {
 };
 
 export default function CritiqueForm({ portfolioId, portfolioUrl, isOwner }: CritiqueFormProps) {
+  const { t } = useI18n();
   const { isSignedIn } = useUser();
   const submitCritique = useMutation(api.critiques.mutations.submit);
 
@@ -81,11 +84,11 @@ export default function CritiqueForm({ portfolioId, portfolioUrl, isOwner }: Cri
     }
 
     if (rating === 0) {
-      setError("Selecione uma avaliação de 1 a 5 estrelas.");
+      setError(t("portfolio.form.ratingHelper"));
       return;
     }
     if (feedbackLen < 20) {
-      setError("O feedback deve ter pelo menos 20 caracteres.");
+      setError(t("portfolio.form.minCritique"));
       return;
     }
     if (feedbackLen > 1_000) {
@@ -104,13 +107,13 @@ export default function CritiqueForm({ portfolioId, portfolioUrl, isOwner }: Cri
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       if (msg.includes("ALREADY_CRITIQUED")) {
-        setError("Você já deixou uma crítica para este portfólio.");
+        setError("Voce ja deixou uma critica para este portfolio.");
       } else if (msg.includes("SELF_CRITIQUE_NOT_ALLOWED")) {
-        setError("Você não pode criticar seu próprio portfólio.");
+        setError("Voce nao pode criticar seu proprio portfolio.");
       } else if (msg.includes("RATE_LIMIT_EXCEEDED")) {
-        setError("Você atingiu o limite de 5 críticas por hora. Tente mais tarde.");
+        setError("Voce atingiu o limite de 5 criticas por hora. Tente mais tarde.");
       } else {
-        setError("Erro ao enviar crítica. Tente novamente.");
+        setError(t("portfolio.form.error"));
       }
     } finally {
       setIsSubmitting(false);
@@ -127,7 +130,7 @@ export default function CritiqueForm({ portfolioId, portfolioUrl, isOwner }: Cri
         role="status"
         className="rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-600 dark:text-green-400"
       >
-        ✓ Crítica enviada com sucesso! Obrigado pelo feedback.
+        ✓ {t("portfolio.form.success")}
       </div>
     );
   }
@@ -138,7 +141,7 @@ export default function CritiqueForm({ portfolioId, portfolioUrl, isOwner }: Cri
         {/* Star Rating */}
         <div className="space-y-1.5">
           <span className="block text-sm font-medium">
-            Avaliação <span aria-hidden="true" className="text-destructive">*</span>
+            {t("portfolio.form.ratingLabel")} <span aria-hidden="true" className="text-destructive">*</span>
           </span>
           <StarRating value={rating} onChange={setRating} disabled={isSubmitting} />
         </div>
@@ -147,7 +150,7 @@ export default function CritiqueForm({ portfolioId, portfolioUrl, isOwner }: Cri
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <label htmlFor="critique-feedback" className="block text-sm font-medium">
-              Feedback <span aria-hidden="true" className="text-destructive">*</span>
+              {t("portfolio.form.critiqueLabel")} <span aria-hidden="true" className="text-destructive">*</span>
             </label>
             <CharacterCounter current={feedbackLen} max={1000} />
           </div>
@@ -159,7 +162,7 @@ export default function CritiqueForm({ portfolioId, portfolioUrl, isOwner }: Cri
               setFeedback(e.target.value);
               setError(null);
             }}
-            placeholder="Escreva um feedback construtivo e detalhado (mínimo 20 caracteres)…"
+            placeholder={t("portfolio.form.critiquePlaceholder")}
             minLength={20}
             maxLength={1000}
             rows={5}
@@ -169,7 +172,7 @@ export default function CritiqueForm({ portfolioId, portfolioUrl, isOwner }: Cri
             className="w-full resize-none rounded-md border bg-background px-3 py-2 text-sm outline-none transition placeholder:text-muted-foreground focus:ring-2 disabled:opacity-50"
           />
           <p id="critique-hint" className="text-xs text-muted-foreground">
-            Seja específico e construtivo. Mínimo de 20 caracteres.
+            {t("portfolio.form.critiqueHelper")}
           </p>
         </div>
 
@@ -185,15 +188,15 @@ export default function CritiqueForm({ portfolioId, portfolioUrl, isOwner }: Cri
           onClick={!isSignedIn ? () => setShowAuthModal(true) : undefined}
           className="w-full rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {isSubmitting ? "Enviando…" : "Deixar Crítica"}
+          {isSubmitting ? t("portfolio.form.submitting") : t("portfolio.detail.critiqueButton")}
         </button>
       </form>
 
       <AuthModal
         open={showAuthModal}
         onOpenChange={setShowAuthModal}
-        title="Entre para continuar"
-        description="Faça login para deixar uma crítica."
+        title={t("modal.auth.title")}
+        description={t("modal.auth.description")}
         redirectTo={`/portfolio/${portfolioId}`}
       />
     </>

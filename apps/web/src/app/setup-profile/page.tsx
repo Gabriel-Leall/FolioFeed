@@ -7,12 +7,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 
 import { AREA_VALUES, type Area } from "@PeerFolio/backend/convex/lib/constants";
+import { useI18n } from "@/i18n/provider";
 
 // ---------------------------------------------------------------------------
 // Inner form (inside Suspense boundary for useSearchParams)
 // ---------------------------------------------------------------------------
 
 function SetupProfileForm() {
+  const { t } = useI18n();
   const { isLoaded, user } = useUser();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -40,7 +42,7 @@ function SetupProfileForm() {
 
     if (!NICKNAME_REGEX.test(nickname)) {
       newErrors.nickname =
-        "Nickname deve ter entre 3 e 30 caracteres e conter apenas letras, números e underscore (_).";
+        "Nickname deve ter entre 3 e 30 caracteres e conter apenas letras, numeros e underscore (_).";
     }
     if (!primaryArea) {
       newErrors.primaryArea = "Área primária é obrigatória.";
@@ -68,9 +70,9 @@ function SetupProfileForm() {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       if (msg.includes("NICKNAME_TAKEN")) {
-        setErrors({ nickname: "Este nickname já está em uso. Tente outro." });
+        setErrors({ nickname: t("setupProfile.form.nicknameTaken") });
       } else {
-        setErrors({ general: "Erro ao salvar perfil. Tente novamente." });
+        setErrors({ general: t("common.error") });
       }
     } finally {
       setIsSubmitting(false);
@@ -95,7 +97,7 @@ function SetupProfileForm() {
       {/* Nickname */}
       <div className="space-y-1.5">
         <label htmlFor="nickname" className="block text-sm font-medium">
-          Nickname <span aria-hidden="true" className="text-destructive">*</span>
+          {t("setupProfile.form.nicknameLabel")} <span aria-hidden="true" className="text-destructive">*</span>
         </label>
         <div className="relative">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground select-none">
@@ -110,7 +112,7 @@ function SetupProfileForm() {
               setNickname(e.target.value);
               setErrors((prev) => ({ ...prev, nickname: undefined }));
             }}
-            placeholder="seu_nickname"
+            placeholder={t("setupProfile.form.nicknamePlaceholder")}
             autoComplete="username"
             minLength={3}
             maxLength={30}
@@ -125,7 +127,7 @@ function SetupProfileForm() {
           </p>
         ) : (
           <p id="nickname-hint" className="text-xs text-muted-foreground">
-            3–30 caracteres. Apenas letras, números e underscore.
+            3-30 caracteres. Apenas letras, numeros e underscore.
           </p>
         )}
       </div>
@@ -133,7 +135,7 @@ function SetupProfileForm() {
       {/* Primary Area */}
       <div className="space-y-1.5">
         <label htmlFor="primary-area" className="block text-sm font-medium">
-          Área Primária <span aria-hidden="true" className="text-destructive">*</span>
+          {t("setupProfile.form.areasLabel")} <span aria-hidden="true" className="text-destructive">*</span>
         </label>
         <select
           id="primary-area"
@@ -147,7 +149,7 @@ function SetupProfileForm() {
           aria-invalid={errors.primaryArea ? "true" : undefined}
           className="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none transition focus:ring-2"
         >
-          <option value="">Selecione sua área…</option>
+          <option value="">{t("setupProfile.form.areasPlaceholder")}</option>
           {AREA_VALUES.map((a) => (
             <option key={a} value={a}>
               {a}
@@ -165,7 +167,7 @@ function SetupProfileForm() {
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <label htmlFor="bio" className="block text-sm font-medium">
-            Bio <span className="text-muted-foreground font-normal">(opcional)</span>
+            {t("setupProfile.form.bioLabel")} <span className="text-muted-foreground font-normal">(opcional)</span>
           </label>
           {bio.length >= 128 && (
             <span
@@ -183,7 +185,7 @@ function SetupProfileForm() {
             setBio(e.target.value);
             setErrors((prev) => ({ ...prev, bio: undefined }));
           }}
-          placeholder="Fale um pouco sobre você…"
+          placeholder={t("setupProfile.form.bioPlaceholder")}
           maxLength={160}
           rows={3}
           aria-describedby={errors.bio ? "bio-error" : undefined}
@@ -202,7 +204,7 @@ function SetupProfileForm() {
         disabled={isSubmitting}
         className="w-full rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {isSubmitting ? "Salvando…" : "Salvar Perfil"}
+        {isSubmitting ? t("setupProfile.form.saving") : t("setupProfile.form.saveButton")}
       </button>
     </form>
   );
@@ -213,12 +215,14 @@ function SetupProfileForm() {
 // ---------------------------------------------------------------------------
 
 export default function SetupProfilePage() {
+  const { t } = useI18n();
+
   return (
     <main className="mx-auto w-full max-w-lg px-4 py-10 md:px-6">
       <header className="mb-8 space-y-2">
-        <h1 className="text-2xl font-semibold md:text-3xl">Configure seu Perfil</h1>
+        <h1 className="text-2xl font-semibold md:text-3xl">{t("setupProfile.page.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Complete seu perfil antes de continuar. Você pode atualizar essas informações depois.
+          {t("setupProfile.page.description")}
         </p>
       </header>
 

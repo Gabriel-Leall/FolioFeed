@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import { useEffect, useMemo } from "react";
+import { useI18n } from "@/i18n/provider";
 
 type AuthModalProps = {
   open: boolean;
@@ -11,16 +12,16 @@ type AuthModalProps = {
   redirectTo?: string;
 };
 
-const DEFAULT_TITLE = "Entre para continuar";
-const DEFAULT_DESCRIPTION = "Faça login para concluir esta ação no PeerFolio.";
-
 export default function AuthModal({
   open,
   onOpenChange,
-  title = DEFAULT_TITLE,
-  description = DEFAULT_DESCRIPTION,
+  title,
+  description,
   redirectTo,
 }: AuthModalProps) {
+  const { t } = useI18n();
+  const resolvedTitle = title ?? t("modal.auth.title");
+  const resolvedDescription = description ?? t("modal.auth.description");
   const redirectParam = useMemo(() => {
     if (!redirectTo || redirectTo.trim().length === 0) {
       return "";
@@ -76,14 +77,14 @@ export default function AuthModal({
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
             <h2 className="text-lg font-semibold" id="auth-modal-title">
-              {title}
+              {resolvedTitle}
             </h2>
             <p className="mt-1 text-sm text-muted-foreground" id="auth-modal-description">
-              {description}
+              {resolvedDescription}
             </p>
           </div>
           <button
-            aria-label="Fechar modal de autenticação"
+            aria-label={t("common.close")}
             className="rounded-md border p-2 text-muted-foreground transition-colors hover:text-foreground"
             onClick={() => onOpenChange(false)}
             type="button"
@@ -98,13 +99,13 @@ export default function AuthModal({
             className="inline-flex h-10 items-center justify-center rounded-md border px-4 text-sm font-medium transition-colors hover:bg-muted"
             href={githubHref}
           >
-            Continuar com GitHub
+            {`Continuar com GitHub`}
           </a>
           <a
             className="inline-flex h-10 items-center justify-center rounded-md border px-4 text-sm font-medium transition-colors hover:bg-muted"
             href={googleHref}
           >
-            Continuar com Google
+            {`Continuar com Google`}
           </a>
         </div>
       </div>
