@@ -5,6 +5,7 @@ import { api } from "@PeerFolio/backend/convex/_generated/api";
 import { useMutation, useAction, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 
 import { AREA_VALUES, type Area } from "@PeerFolio/backend/convex/lib/constants";
 import { CharacterCounter } from "@/components/CharacterCounter";
@@ -180,7 +181,7 @@ export default function SubmitPortfolioForm() {
       });
 
       if (result.claimed) {
-        alert(t("submit.form.claimSuccess"));
+        toast.success(t("submit.form.claimSuccess"));
       }
 
       router.push(`/portfolio/${result.portfolioId}`);
