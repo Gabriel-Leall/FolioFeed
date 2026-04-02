@@ -317,8 +317,8 @@ function PreviewSection({
 
       {/* Hover overlay hint */}
       <div
-        className={`absolute inset-0 flex items-center justify-center rounded-2xl bg-black/60 transition-opacity duration-300 ${
-          isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
+        className={`pointer-events-none absolute inset-0 flex items-center justify-center rounded-2xl bg-black/60 transition-opacity duration-300 ${
+          isHovered ? "opacity-100" : "opacity-0"
         }`}
       >
         <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-black">
