@@ -55,21 +55,6 @@ export const submit = mutation({
       throw new ConvexError("UNSAFE_URL");
     }
 
-    // Check for duplicate normalizedUrl
-    const existing = await ctx.db
-      .query("portfolios")
-      .withIndex("by_normalizedUrl", (q) =>
-        q.eq("normalizedUrl", normalizedUrl),
-      )
-      .first();
-
-    if (existing !== null && !existing.isDeleted) {
-      throw new ConvexError({
-        code: "DUPLICATE_URL",
-        existingPortfolioId: existing._id,
-      });
-    }
-
     // Check if exists as seed
     const seededPortfolio = await ctx.db
       .query("portfolios")
@@ -96,6 +81,21 @@ export const submit = mutation({
       });
 
       return { portfolioId: seededPortfolio._id, claimed: true };
+    }
+
+    // Check for duplicate normalizedUrl
+    const existing = await ctx.db
+      .query("portfolios")
+      .withIndex("by_normalizedUrl", (q) =>
+        q.eq("normalizedUrl", normalizedUrl),
+      )
+      .first();
+
+    if (existing !== null && !existing.isDeleted) {
+      throw new ConvexError({
+        code: "DUPLICATE_URL",
+        existingPortfolioId: existing._id,
+      });
     }
 
     const now = Date.now();
