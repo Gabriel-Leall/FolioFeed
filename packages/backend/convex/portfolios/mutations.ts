@@ -79,14 +79,18 @@ export const submit = mutation({
       .first();
 
     if (seededPortfolio) {
+      // Claim the seed - transfer ownership to new user, keep all stats (likes, critiques, ratings)
       await ctx.db.patch(seededPortfolio._id, {
         authorId: user._id,
         isSeeded: false,
         title: args.title,
         stack: args.stack,
         goalsContext: args.goalsContext,
+        // Keep: averageRating, critiqueCount, likeCount, topRatedScore, previewImageUrl, urlStatus, etc.
+        // The portfolio stays in the feed (no isDeleted flag)
       });
 
+      // Increment new owner's portfolio count
       await ctx.db.patch(user._id, {
         portfoliosCount: user.portfoliosCount + 1,
       });
