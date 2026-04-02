@@ -18,12 +18,27 @@ export default function DashboardRoot() {
 
   // If the user is signed in and we have their Convex ID, redirect to their profile
   useEffect(() => {
-    if (isLoaded && isSignedIn && me) {
+    if (!isLoaded || !isSignedIn) return;
+
+    if (me) {
       router.replace(getProfileRoute(me) as any);
+      return;
+    }
+
+    if (me === null) {
+      router.replace("/setup-profile?redirect=/dashboard" as any);
     }
   }, [isLoaded, isSignedIn, me, router]);
 
   if (!isLoaded || (isSignedIn && me === undefined)) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (isSignedIn && me === null) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
