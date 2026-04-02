@@ -11,6 +11,7 @@ import { useState } from "react";
 import AuthModal from "@/components/AuthModal";
 import { ReportModal } from "@/components/ReportModal";
 import { TruncatedText } from "@/components/TruncatedText";
+import { useI18n } from "@/i18n/provider";
 
 // ---------------------------------------------------------------------------
 // Types (re-exported for convenience)
@@ -57,6 +58,7 @@ interface FeedCardProps {
 }
 
 export function FeedCard({ portfolio, onOpenModal }: FeedCardProps) {
+  const { t } = useI18n();
   const { isSignedIn } = useUser();
   const toggleLike = useMutation(api.likes.mutations.toggle);
   const toggleFavorite = useMutation(api.favorites.mutations.toggle);
@@ -71,7 +73,7 @@ export function FeedCard({ portfolio, onOpenModal }: FeedCardProps) {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
 
-  const displayName = portfolio.author.nickname ?? "Anônimo";
+  const displayName = portfolio.author.nickname ?? t("profile.content.anonymous");
   const showOfflineBadge =
     portfolio.urlStatus === "offline" &&
     (portfolio.consecutiveOfflineCount ?? 0) >= 3;
@@ -199,7 +201,7 @@ export function FeedCard({ portfolio, onOpenModal }: FeedCardProps) {
             <div className="flex items-center gap-2">
               {showOfflineBadge && (
                 <span className="inline-flex items-center gap-1 rounded-md bg-amber-500/90 px-2.5 py-1 text-[11px] font-medium text-white shadow backdrop-blur-sm">
-                  Site fora do ar
+                  {t("feed.card.offline")}
                 </span>
               )}
               {!isOwnPortfolio && (
@@ -229,7 +231,7 @@ className={cn(
               className="w-full py-2.5 rounded-md bg-primary/20 backdrop-blur-md border border-primary/20 text-primary font-medium text-sm text-center"
               aria-hidden
             >
-              Ver Projeto
+              {t("feed.card.viewProject")}
             </span>
           </div>
         </div>
@@ -258,7 +260,7 @@ className={cn(
                 <button
                   type="button"
                   onClick={handleReport}
-                  aria-label="Denunciar portfólio"
+                  aria-label={t("feed.card.reportPortfolio")}
                   className="ml-1 p-1 rounded hover:bg-white/10 transition-colors"
                 >
                   <Flag className="h-3.5 w-3.5 text-muted-foreground hover:text-red-400" />
@@ -305,8 +307,12 @@ className={cn(
             {/* Critiques */}
             <div
               className="flex items-center gap-1 text-xs text-muted-foreground"
-              title={`${portfolio.critiqueCount} crítica${portfolio.critiqueCount !== 1 ? "s" : ""}`}
-            >
+                title={
+                  portfolio.critiqueCount === 1
+                    ? t("feed.card.critiqueTitle", { values: { count: portfolio.critiqueCount } })
+                    : t("feed.card.critiqueTitlePlural", { values: { count: portfolio.critiqueCount } })
+                }
+              >
               <MessageSquare className="h-3 w-3" />
               <span>{portfolio.critiqueCount}</span>
             </div>
@@ -326,8 +332,8 @@ className={cn(
       <AuthModal
         open={showAuthModal}
         onOpenChange={setShowAuthModal}
-        title="Entre para continuar"
-        description="Faça login para curtir e salvar este portfólio."
+        title={t("modal.auth.title")}
+        description={t("feed.card.authLikeSave")}
         redirectTo={isMock ? "/feed" : `/portfolio/${portfolio._id}`}
       />
     </>

@@ -19,8 +19,10 @@ import {
 } from "@/components/user-profile";
 import type { UserProfileTab } from "@/components/user-profile/types";
 import { ProfileNotFoundState } from "@/components/profile/ProfileNotFoundState";
+import { useI18n } from "@/i18n/provider";
 
 export default function ProfilePage() {
+  const { t } = useI18n();
   const params = useParams<{ userId: string }>();
   const { isSignedIn } = useUser();
   const [activeTab, setActiveTab] = useState<UserProfileTab>("portfolios");
@@ -87,7 +89,7 @@ export default function ProfilePage() {
     return <ProfileNotFoundState />;
   }
 
-  const displayName = profile.nickname ?? "Anônimo";
+  const displayName = profile.nickname ?? t("profile.content.anonymous");
 
   return (
     <div className="space-y-0 overflow-x-hidden">

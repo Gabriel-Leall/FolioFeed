@@ -5,8 +5,10 @@ import { usePaginatedQuery } from "convex/react";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { api } from "@PeerFolio/backend/convex/_generated/api";
+import { useI18n } from "@/i18n/provider";
 
 export function CulturalSpotlight() {
+  const { t } = useI18n();
   const { results, status } = usePaginatedQuery(
     api.portfolios.queries.list,
     { filter: "topRated" },
@@ -17,13 +19,13 @@ export function CulturalSpotlight() {
     <section id="portfolios" className="mx-auto max-w-7xl px-6 py-28 md:py-32">
       <div className="mb-18 flex items-end justify-between gap-6 md:mb-22 cursor-default">
         <h2 className="font-serif text-4xl font-semibold text-on-surface md:text-6xl">
-          Destaques Culturais
+          {t("landing.spotlight.title")}
         </h2>
         <Link
           href="/feed"
           className="group inline-flex items-center gap-2.5 text-sm font-label uppercase tracking-[0.18em] text-primary"
         >
-          Ver Exposição Completa
+          {t("landing.spotlight.viewAll")}
           <ArrowRight
             className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-1"
             aria-hidden="true"
@@ -34,11 +36,11 @@ export function CulturalSpotlight() {
       <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
         {status === "LoadingFirstPage" ? (
           <div className="col-span-1 md:col-span-3 text-center py-12 text-on-surface-variant font-label uppercase tracking-widest">
-            Carregando Arquivo...
+            {t("landing.spotlight.loading")}
           </div>
         ) : results.length === 0 ? (
           <div className="col-span-1 md:col-span-3 text-center py-12 text-on-surface-variant font-label uppercase tracking-widest">
-            Nenhum projeto em destaque ainda.
+            {t("landing.spotlight.empty")}
           </div>
         ) : (
           results.map((portfolio, index) => {
@@ -66,7 +68,7 @@ export function CulturalSpotlight() {
                 <div className="flex flex-1 flex-col items-start justify-between rounded-b-xl p-8">
                   <div className="w-full text-left">
                     <span className="text-xs font-label text-primary uppercase tracking-[0.2em] mb-2 block">
-                      {portfolio.area || "Objeto Físico"}
+                      {portfolio.area || t("landing.spotlight.fallbackArea")}
                     </span>
                     <h3 className="font-body text-2xl font-semibold text-on-surface line-clamp-2">
                       {portfolio.title}
@@ -74,7 +76,7 @@ export function CulturalSpotlight() {
                   </div>
                   <div className="mt-auto flex w-full items-center justify-between border-t border-outline-variant/10 pt-6">
                     <span className="text-on-surface-variant font-body text-sm truncate pr-4">
-                      {portfolio.author?.nickname || "Anônimo"}
+                      {portfolio.author?.nickname || t("profile.content.anonymous")}
                     </span>
                     <ArrowRight
                       className="h-4 w-4 shrink-0 text-primary transition-transform duration-200 group-hover:translate-x-1"

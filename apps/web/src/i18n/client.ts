@@ -15,6 +15,8 @@ if (!i18n.isInitialized) {
     },
     lng: DEFAULT_LOCALE,
     fallbackLng: DEFAULT_LOCALE,
+    keySeparator: false,
+    nsSeparator: false,
     interpolation: {
       escapeValue: false,
       prefix: "{",
