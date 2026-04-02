@@ -20,27 +20,6 @@ import {
 } from "@PeerFolio/ui/components/dropdown-menu";
 import { cn } from "@PeerFolio/ui/lib/utils";
 
-// ---------------------------------------------------------------------------
-// Constants for Inline Filters
-// ---------------------------------------------------------------------------
-
-const CATEGORIES = [
-  { label: "todos os tópicos", value: undefined },
-  { label: "Frontend", value: "Frontend" },
-  { label: "Backend", value: "Backend" },
-  { label: "Fullstack", value: "Fullstack" },
-  { label: "UI/UX", value: "UI/UX" },
-  { label: "Mobile", value: "Mobile" },
-  { label: "Outros", value: "Other" },
-] as const;
-
-const FILTERS = [
-  { label: "recentes", value: "latest" },
-  { label: "melhores avaliados", value: "topRated" },
-  { label: "mais curtidos", value: "mostLiked" },
-  { label: "mais comentados", value: "mostCommented" },
-] as const;
-
 const FEEDBACK_POSITIONS = [11, 47, 59];
 
 type FeedFilter = "latest" | "topRated" | "mostLiked" | "mostCommented";
@@ -248,6 +227,23 @@ export default function FeedPage() {
   );
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
 
+  const CATEGORIES = [
+    { label: t("feed.categories.all"), value: undefined },
+    { label: "Frontend", value: "Frontend" },
+    { label: "Backend", value: "Backend" },
+    { label: "Fullstack", value: "Fullstack" },
+    { label: "UI/UX", value: "UI/UX" },
+    { label: "Mobile", value: "Mobile" },
+    { label: t("feed.categories.other"), value: "Other" },
+  ] as const;
+
+  const FILTERS = [
+    { label: t("feed.filter.latest"), value: "latest" },
+    { label: t("feed.filter.topRated"), value: "topRated" },
+    { label: t("feed.filter.mostLiked"), value: "mostLiked" },
+    { label: t("feed.filter.mostCommented"), value: "mostCommented" },
+  ] as const;
+
   const { results, status, loadMore } = usePaginatedQuery(
     api.portfolios.queries.list,
     { filter: currentFilter, area: selectedArea },
@@ -280,7 +276,7 @@ export default function FeedPage() {
         <div className="absolute inset-0 bg-linear-to-b from-primary/5 to-transparent opacity-50 rounded-2xl" />
         <div className="relative z-10 text-center max-w-xs">
           <p className="font-serif text-2xl sm:text-3xl lg:text-4xl text-white/90 leading-tight mb-6 italic">
-            Moldando o Etéreo
+            {t("feed.page.moldandoEtereo")}
           </p>
           <p className="font-sans text-sm sm:text-base text-white/50 leading-relaxed mb-8">
             {t("feed.feedbackPrompt")}
@@ -345,7 +341,7 @@ export default function FeedPage() {
           <h1 className="relative font-serif font-light tracking-tight text-foreground mx-auto max-w-6xl leading-snug mb-4">
             <span className="flex flex-wrap items-baseline justify-center gap-x-1 sm:gap-x-2 gap-y-1">
               <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-tighter">
-                Explorando obras
+                {t("feed.page.title")}
               </span>
               <DropdownMenu>
                 <DropdownMenuTrigger
@@ -379,7 +375,7 @@ export default function FeedPage() {
                 </DropdownMenuContent>
               </DropdownMenu>
               <span className="opacity-80 text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl mr-1 sm:mr-2">
-                em
+                {t("feed.page.in")}
               </span>
               <DropdownMenu>
                 <DropdownMenuTrigger
@@ -418,8 +414,7 @@ export default function FeedPage() {
           {/* Description */}
           <div className="mt-4 sm:mt-6">
             <p className="font-sans text-muted-foreground max-w-2xl mx-auto text-base sm:text-lg lg:text-xl leading-relaxed">
-              Uma curadoria de craftsmanship digital, portfólios de excelência e
-              trabalhos que inspiram. Explore, critique e evolua.
+              {t("feed.page.description")}
             </p>
           </div>
         </div>
@@ -474,10 +469,10 @@ export default function FeedPage() {
               {isLoadingMore ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Carregando...
+                  {t("feed.loading")}
                 </>
               ) : (
-                "Carregar mais"
+                t("feed.loadMore")
               )}
             </Button>
           </div>
@@ -491,7 +486,7 @@ export default function FeedPage() {
               <span className="h-1.5 w-1.5 animate-pulse rounded-sm bg-primary [animation-delay:200ms]" />
               <span className="h-1.5 w-1.5 animate-pulse rounded-sm bg-primary [animation-delay:400ms]" />
               <span className="ml-2 font-sans text-[11px] uppercase tracking-widest">
-                Carregando mais obras
+                {t("feed.loadingMore")}
               </span>
             </div>
           </div>
@@ -503,10 +498,10 @@ export default function FeedPage() {
         {isExhausted && !hasResults && selectedArea && (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <p className="font-serif text-xl text-foreground mb-2">
-              Nenhum portfólio encontrado
+              {t("feed.empty.title")}
             </p>
             <p className="max-w-sm font-sans text-sm text-muted-foreground leading-relaxed">
-              Não há portfólios nessa área ainda. Tente outro filtro.
+              {t("feed.empty.description")}
             </p>
             <Button
               variant="outline"
@@ -516,7 +511,7 @@ export default function FeedPage() {
                 setCurrentFilter("latest");
               }}
             >
-              Limpar filtros
+              {t("feed.clearFilters")}
             </Button>
           </div>
         )}

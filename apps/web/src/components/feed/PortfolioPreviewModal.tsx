@@ -328,7 +328,7 @@ function CritiqueForm({
             ) : (
               <Send className="h-3.5 w-3.5" />
             )}
-            Enviar
+            {t("common.submit")}
           </button>
         </div>
       </form>
@@ -406,7 +406,7 @@ export function PortfolioPreviewModal({
       <div
         role="dialog"
         aria-modal="true"
-        aria-label={`Pré-visualização: ${portfolio.title}`}
+        aria-label={t("feed.modal.previewAria") + " " + portfolio.title}
         className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 pointer-events-none"
       >
         <div
@@ -495,11 +495,11 @@ export function PortfolioPreviewModal({
                       {portfolio.averageRating.toFixed(1)}
                     </div>
                   )}
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground/50" title="Críticas">
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground/50" title={t("feed.modal.critiques")}>
                     <MessageSquare className="h-3.5 w-3.5" />
                     {critiques?.length ?? portfolio.critiqueCount}
                   </div>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground/50" title="Curtidas">
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground/50" title={t("feed.modal.likes")}>
                     <Heart className="h-3.5 w-3.5" />
                     {portfolio.likeCount}
                   </div>
@@ -548,10 +548,10 @@ export function PortfolioPreviewModal({
               </div>
 
               {/* ── Critiques Section ── */}
-              <section aria-label="Críticas da comunidade" className="mt-10 border-t border-border/8 pt-8">
+              <section aria-label={t("feed.modal.communityCritiques")} className="mt-10 border-t border-border/8 pt-8">
                 <div className="mb-5 flex items-center justify-between">
                   <h3 className="font-serif text-xl font-light text-foreground">
-                    Críticas da Comunidade
+                    {t("feed.modal.communityCritiques")}
                     {critiques && critiques.length > 0 && (
                       <span className="ml-2 font-sans text-sm font-normal text-muted-foreground/50">
                         ({critiques.length})
@@ -578,7 +578,7 @@ export function PortfolioPreviewModal({
                     <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border/10 py-10 text-center">
                       <MessageSquare className="h-8 w-8 text-muted-foreground/20" />
                       <p className="font-sans text-sm text-muted-foreground/60">
-                        Nenhuma crítica ainda. Seja o primeiro!
+                        {t("feed.modal.noCritiquesYet")}
                       </p>
                     </div>
                   )}
