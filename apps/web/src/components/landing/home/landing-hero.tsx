@@ -1,6 +1,5 @@
 "use client";
 
-import { Code2, MessageSquare, Users } from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 
@@ -18,34 +17,17 @@ const HeroBackgroundEffects = dynamic(
 
 export function LandingHero() {
   const { t } = useI18n();
-  const stats = [
-    {
-      icon: <Code2 className="h-4 w-4" />,
-      value: "2.5K+",
-      label: t("landing.hero.stats.portfolios"),
-    },
-    {
-      icon: <MessageSquare className="h-4 w-4" />,
-      value: "8K+",
-      label: t("landing.hero.stats.critiques"),
-    },
-    {
-      icon: <Users className="h-4 w-4" />,
-      value: "1.2K+",
-      label: t("landing.hero.stats.developers"),
-    },
-  ];
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
       <HeroBackgroundEffects />
 
       <div className="relative z-10 mx-auto max-w-5xl px-6 text-center">
-        <h1 className="pf-home-fade-1 mb-12 font-headline text-5xl leading-tight tracking-tight text-on-surface md:text-8xl">
+        <h1 className="pf-home-fade-1 mb-12 font-headline text-4xl leading-tight tracking-tight text-on-surface sm:text-5xl md:text-6xl lg:text-7xl">
           {t("landing.hero.title.line1")}
           <br className="hidden md:block" />
           <span className="font-light italic text-primary">
-            {t("landing.hero.title.line2")}
+            {" "}{t("landing.hero.title.line2")}
           </span>
         </h1>
 
@@ -66,19 +48,6 @@ export function LandingHero() {
               {t("landing.hero.cta.secondary")}
             </Button>
           </Link>
-        </div>
-
-        <div className="pf-home-fade-4 mt-8 flex w-full flex-wrap items-center justify-center gap-x-8 gap-y-3 font-body">
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="flex items-center justify-center gap-2 text-base text-on-surface-variant"
-            >
-              <div className="text-primary/60 dark:text-primary/45">{stat.icon}</div>
-              <span className="font-semibold text-on-surface/70">{stat.value}</span>
-              <span className="text-on-surface-variant/70">{stat.label}</span>
-            </div>
-          ))}
         </div>
       </div>
 
